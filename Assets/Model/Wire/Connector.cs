@@ -22,19 +22,7 @@ public class Connector : MonoBehaviour {
         foreach (FixedJoint joint in joints) {
             joint.connectedBody.useGravity = true;
         }
-
-        /*
-        if (currentJoints[0] == null) {
-            joints[0].connectedBody.useGravity = true;
-        } else {
-            joints[1].connectedBody.useGravity = true;
-        }
-        joints[1].connectedBody.useGravity = true;
-        joints[0].connectedBody.useGravity = true;
-
-    */
         Destroy(gameObject);
-        //gameObject.SetActive(false);
             
     }
 }

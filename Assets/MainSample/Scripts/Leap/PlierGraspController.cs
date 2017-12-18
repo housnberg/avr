@@ -20,7 +20,7 @@ public class PlierGraspController : BaseGraspController {
     }
     
     public override void init() {
-        handleRightHj = this.transform.GetChild(1).GetComponent<HingeJoint>();
+        handleRightHj = this.GetComponentInChildren<HingeJoint>();
         spring = handleRightHj.spring;
         maxTargetPosition = spring.targetPosition;
     }
