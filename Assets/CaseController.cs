@@ -4,42 +4,29 @@ using UnityEngine;
 
 public class CaseController : MonoBehaviour {
 
+	private HingeJoint hinge;
+	private bool isOpen;
 
-	GameObject lid;
-	bool isOpen;
-
-	CaseButtonController leftButton;
-	CaseButtonController rightButton;
+	private CaseButtonController leftButton;
+	private CaseButtonController rightButton;
 	
-	GameObject[] fingerTips;
+	private GameObject[] fingerTips;
+    
 
 	// Use this for initialization
 	void Start () {
-		lid = GameObject.FindGameObjectWithTag ("CaseLid");
-		fingerTips = GameObject.FindGameObjectsWithTag ("FingerTip");
-		leftButton = GameObject.FindGameObjectWithTag("LeftCaseButton").GetComponent<CaseButtonController>();
-		rightButton = GameObject.FindGameObjectWithTag("RightCaseButton").GetComponent<CaseButtonController>();
+		hinge = GameObject.FindGameObjectWithTag(TagConstants.CASE_LID).GetComponent<HingeJoint>();
+		fingerTips = GameObject.FindGameObjectsWithTag (TagConstants.FINGER_TIP);
+		leftButton = GameObject.FindGameObjectWithTag(TagConstants.LEFT_CASE_BUTTON).GetComponent<CaseButtonController>();
+        rightButton = GameObject.FindGameObjectWithTag(TagConstants.RIGHT_CASE_BUTTON).GetComponent<CaseButtonController>();   
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (!isOpen && CheckCollider()) {
-			StartCoroutine ("Open", 1.5f);
-		}
-	}
-
-	IEnumerator Open (float time) {
-		isOpen = true;
-
-		float elapsedTime = 0.0f;
-
-		Quaternion startingRotation = lid.transform.rotation;
-		Quaternion targetRotation =  startingRotation * Quaternion.Euler (new Vector3(-90.0f, 0.0f, 0.0f));
-
-		while (elapsedTime < time) {
-			elapsedTime += Time.deltaTime;
-			lid.transform.rotation = Quaternion.Lerp(startingRotation, targetRotation,  (elapsedTime / time)  );
-			yield return new WaitForEndOfFrame ();
+            JointSpring spring = hinge.spring;
+            spring.targetPosition = 120;
+            hinge.spring = spring;
 		}
 	}
 

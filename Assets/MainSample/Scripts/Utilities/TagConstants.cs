@@ -12,5 +12,8 @@ internal static class TagConstants {
     public const string HANDLE_RIGHT_COLLIDER = "HandleRightCollider";
     public const string WIRE_CONNECTOR = "WireConnector";
     public const string WIRE_CABLE = "WireCable";
-
+    public const string CASE_LID = "CaseLid";
+    public const string FINGER_TIP = "FingerTip";
+    public const string LEFT_CASE_BUTTON = "LeftCaseButton";
+    public const string RIGHT_CASE_BUTTON = "RightCaseButton";
 }
