@@ -24,16 +24,16 @@ public class PliersController : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-        WireController wireController = other.transform.GetComponent<WireController>();
-        if (wireController != null && !isPliersOpen()) {
-            wireController.resetStartAndEndPoints(wireController.jointBreakForce);
+        Cable cable = other.transform.GetComponent<Cable>();
+        if (cable != null && !isPliersOpen()) {
+            cable.resetStartAndEndPoints(cable.jointBreakForce);
         }
     }
 
     void OnTriggerExit(Collider other) {
-        WireController wireController = other.transform.GetComponent<WireController>();
-        if (wireController != null) {
-            wireController.resetStartAndEndPoints(Mathf.Infinity);
+        Cable cable = other.transform.GetComponent<Cable>();
+        if (cable != null) {
+            cable.resetStartAndEndPoints(Mathf.Infinity);
         }
     }
 
