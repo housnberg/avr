@@ -12,13 +12,17 @@ public class GameManager : MonoBehaviour {
     private int amountModules;
     private int amountSucceededModules;
 
-    private CountdownModule countdownModule;
+    private CountdownModule timer;
     private Bomb bomb;
+
+    private GameObject gameOverScreen;
+    private GameObject gameWonScreen;
 
     public AudioSource gameOverSound;
     public AudioSource winSound;
 
     private bool gameLost = false;
+    private bool gameWon = false;
 
     void Awake() {    
         if (instance == null) {
@@ -28,8 +32,14 @@ public class GameManager : MonoBehaviour {
         }
         DontDestroyOnLoad(gameObject);
 
+        gameOverScreen = GameObject.Find("GameOverScreen");
+        gameWonScreen = GameObject.Find("GameWonScreen");
+
+        gameOverScreen.SetActive(false);
+        gameWonScreen.SetActive(false);
+
         amountModules = GameObject.FindObjectsOfType<Module>().Length;
-        countdownModule = GameObject.FindObjectOfType<CountdownModule>();
+        timer = GameObject.FindObjectOfType<CountdownModule>();
         bomb = GameObject.FindObjectOfType<Bomb>();
 
         EventManager.StartListening("ModulePassed", ModulePassed);
@@ -38,27 +48,49 @@ public class GameManager : MonoBehaviour {
 
     void ModulePassed() {
         Debug.Log("YEAH MODULE PASSED");
-        amountSucceededModules++;
-        if (amountSucceededModules == amountModules) {
-            if (winSound != null) {
-                winSound.Play();
+        if (!gameLost && !gameWon) {
+            amountSucceededModules++;
+            if (amountSucceededModules == amountModules) {
+                gameWon = true;
+                if (winSound != null) {
+                    winSound.Play();
+                    StartCoroutine(ShowScreenAfterSeconds(winSound.clip.length, gameWonScreen));
+                }
+                if (timer != null) {
+                    timer.Stop();
+                }
+                Debug.Log("YOU DEFUSED THE BOMB!!!");
             }
-            if (countdownModule != null) {
-                countdownModule.Stop();
-            }
-            Debug.Log("YOU DEFUSED THE BOMB!!!");
         }
     }
 
     void ModuleFailed() {
-        gameLost = true;
-        if (countdownModule != null) {
-            countdownModule.FastCountdown();
+        if (!gameLost && !gameWon) {
+            gameLost = true;
+            if (timer != null) {
+                timer.FastCountdown();
+            }
+            StartCoroutine(ExplodeAfterDelay(timer.beepLong.clip.length));
         }
+    }
+
+    private IEnumerator ExplodeAfterDelay(float seconds) {
+        yield return new WaitForSeconds(seconds);
+
         if (gameOverSound != null) {
             gameOverSound.Play();
+            StartCoroutine(ShowScreenAfterSeconds(gameOverSound.clip.length, gameOverScreen));
         }
-        bomb.Explode();
+        if (bomb != null) {
+            bomb.Explode();
+        }
         Debug.Log("BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM");
+    }
+
+    private IEnumerator ShowScreenAfterSeconds(float seconds, GameObject screen) {
+        yield return new WaitForSeconds(seconds);
+
+        Debug.Log("Set screen active");
+        screen.SetActive(true);
     }
 }

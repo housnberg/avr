@@ -10,17 +10,25 @@ public abstract class BaseGraspController : MonoBehaviour {
     private GameObject handWrapper;
     private HandModel handModel;
     protected Hand hand;
-
-    public bool adjustGrasping = false;
+    
     public Vector3 adjustment;
 
     private bool hasBeenAdjusted = false;
     private Transform wrapper;
     private Vector3 initialPosition;
 
+    public Rigidbody anchor;
+    public float breakForce = Mathf.Infinity;
+
+    private Joint anchorJoint;
+
     void Start () {
         this.graspableObject = this.GetComponent<GraspableObject>();
         this.init();
+        if (anchor != null) {
+            anchorJoint = anchor.GetComponent<Joint>();
+            anchorJoint.connectedBody = this.GetComponent<Rigidbody>();
+        }
     }
 	
 	void Update () {
@@ -30,25 +38,12 @@ public abstract class BaseGraspController : MonoBehaviour {
             hand = handModel.GetLeapHand();
 
             if (graspableObject.IsGrabbed()) {
-                doGraspAction();
-                /*
-                if (adjustGrasping && !hasBeenAdjusted) {
-                    wrapper = this.transform.GetChild(0);
-                    initialPosition = wrapper.localPosition;
-                    wrapper.localPosition = adjustment;
-
-                    hasBeenAdjusted = true;
+                if (anchor != null) {
+                    anchorJoint.breakForce = breakForce;
                 }
-                */
+                doGraspAction();
             } else {
                 cancelGraspAction();
-                /*
-                if (adjustGrasping && hasBeenAdjusted) {
-                    wrapper.localPosition = initialPosition;
-
-                    hasBeenAdjusted = false;
-                }
-                */
             }
         } 
 	}

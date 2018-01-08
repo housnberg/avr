@@ -31,8 +31,14 @@ public class Cable : MonoBehaviour {
     }
     
     public void resetStartAndEndPoints(float value) {
-        FixedJoint[] startJoints = startPoint.GetComponents<FixedJoint>();
-        FixedJoint[] endJoints = endPoint.GetComponents<FixedJoint>();
+        FixedJoint[] startJoints = new FixedJoint[0];
+        FixedJoint[] endJoints = new FixedJoint[0];
+        if (startPoint!= null) {
+            startJoints = startPoint.GetComponents<FixedJoint>();
+        }
+        if(endPoint != null) {
+            endJoints = endPoint.GetComponents<FixedJoint>();
+        }
 
         foreach (FixedJoint joint in startJoints) {
             joint.breakForce = value;
