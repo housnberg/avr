@@ -1,0 +1,179 @@
+fileFormatVersion: 2
+guid: 62d56e4b1540c034a9981aca0b499e1e
+timeCreated: 1513778895
+licenseType: Free
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: boden
+    100002: Cube_001
+    100004: Cylinder
+    100006: deckel
+    100008: //RootNode
+    100010: t_rklinge
+    100012: Wand_hinten
+    100014: Wand_links
+    100016: Wand_rechts
+    100018: Wand_vorne
+    400000: boden
+    400002: Cube_001
+    400004: Cylinder
+    400006: deckel
+    400008: //RootNode
+    400010: t_rklinge
+    400012: Wand_hinten
+    400014: Wand_links
+    400016: Wand_rechts
+    400018: Wand_vorne
+    2300000: boden
+    2300002: Cube_001
+    2300004: Cylinder
+    2300006: deckel
+    2300008: t_rklinge
+    2300010: Wand_hinten
+    2300012: Wand_links
+    2300014: Wand_rechts
+    2300016: Wand_vorne
+    3300000: boden
+    3300002: Cube_001
+    3300004: Cylinder
+    3300006: deckel
+    3300008: t_rklinge
+    3300010: Wand_hinten
+    3300012: Wand_links
+    3300014: Wand_rechts
+    3300016: Wand_vorne
+    4300000: Cylinder
+    4300002: Cube_001
+    4300004: deckel
+    4300006: boden
+    4300008: Wand_rechts
+    4300010: Wand_hinten
+    4300012: Wand_vorne
+    4300014: t_rklinge
+    4300016: Wand_links
+    7400000: Default Take
+    9500000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: 3f297f46255494848aa274454ea034c1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_001
+    second: {fileID: 2100000, guid: 55485c755826c0144a9f20966ce61ad0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_002
+    second: {fileID: 2100000, guid: d4c4bee31bf4e5942a418fbc1baa113b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_003
+    second: {fileID: 2100000, guid: c0f8bb21f8e9085409c0dca2b87e4be3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_004
+    second: {fileID: 2100000, guid: f6852b309b4be264b88a6564c2a368d7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: fenster
+    second: {fileID: 2100000, guid: 5e6e6da11ab308842a2c6999016f9c23, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: grau
+    second: {fileID: 2100000, guid: e6932e0cac18f3c4dbd824722c9949f2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: schwarz
+    second: {fileID: 2100000, guid: 67191b3e691e1dc4daf6b09c443d5c3f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: seitenwand
+    second: {fileID: 2100000, guid: d7be250391c48dd4aa3cbff9deb2b685, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
