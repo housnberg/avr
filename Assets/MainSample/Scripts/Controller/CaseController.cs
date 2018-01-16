@@ -20,8 +20,8 @@ public class CaseController : MonoBehaviour {
     private Vector3 currentCaseControllerPosition;
     private Vector3 targetPosition;
     
-    private bool move = false;
-    private bool rotate = false;
+    private bool isMoving = false;
+    private bool isRotating = false;
 
 	// Use this for initialization
 	void Start () {
@@ -48,13 +48,14 @@ public class CaseController : MonoBehaviour {
 		}
 
         float step = speed * Time.deltaTime;
-        if (move) {
+        if (isMoving) {
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
         }
-        if (rotate) {
+
+        if (isRotating) {
             transform.Rotate(new Vector3(2, 0, 0));
             if (Mathf.Round(transform.eulerAngles.x) >= rotationAngle) {
-                rotate = false;
+                isRotating = false;
             }
         }
 	}
@@ -66,7 +67,7 @@ public class CaseController : MonoBehaviour {
     private IEnumerator Move(float seconds) {
         yield return new WaitForSeconds(seconds);
 
-        move = true;
-        rotate = true;
+        isMoving = true;
+        isRotating = true;
     }
 }

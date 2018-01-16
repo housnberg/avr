@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Singleton.
@@ -42,11 +43,12 @@ public class GameManager : MonoBehaviour {
         timer = GameObject.FindObjectOfType<CountdownModule>();
         bomb = GameObject.FindObjectOfType<Bomb>();
 
-        EventManager.StartListening("ModulePassed", ModulePassed);
-        EventManager.StartListening("ModuleFailed", ModuleFailed);
+        EventManager.StartListening("ModulePassed", OnModulePassed);
+        EventManager.StartListening("ModuleFailed", OnModuleFailed);
+        EventManager.StartListening("ReloadGame", OnReloadGame);
     }
 
-    void ModulePassed() {
+    void OnModulePassed() {
         Debug.Log("YEAH MODULE PASSED");
         if (!gameLost && !gameWon) {
             amountSucceededModules++;
@@ -64,7 +66,7 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    void ModuleFailed() {
+    void OnModuleFailed() {
         if (!gameLost && !gameWon) {
             gameLost = true;
             if (timer != null) {
@@ -92,5 +94,10 @@ public class GameManager : MonoBehaviour {
 
         Debug.Log("Set screen active");
         screen.SetActive(true);
+    }
+
+    private void OnReloadGame() {
+        Debug.Log("RESTART SCENE");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

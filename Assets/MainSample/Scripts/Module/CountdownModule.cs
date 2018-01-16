@@ -20,7 +20,7 @@ public class CountdownModule : MonoBehaviour {
     public float miliseconds = 0;
 
     void Awake() {
-        EventManager.StartListening("StartTimer", StartTimer);
+        EventManager.StartListening("StartTimer", OnStartTimer);
 
         if (playOnAwake) {
             started = true;
@@ -67,7 +67,7 @@ public class CountdownModule : MonoBehaviour {
         }
     }
 
-    private void StartTimer() {
+    private void OnStartTimer() {
         started = true;
     }
 

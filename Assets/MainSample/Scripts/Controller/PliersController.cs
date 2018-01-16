@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PliersController : MonoBehaviour {
+public class PliersController : BaseController {
 
     private bool leftHandleCollided = false;
     private bool rightHandleCollided = false;
@@ -12,12 +12,16 @@ public class PliersController : MonoBehaviour {
     private JointSpring spring;
     private Transform adjustment;
 
-    void Start() {
+    new void Start() {
+        base.Start();
+
         handleRightHj = this.GetComponentInChildren<HingeJoint>();
         adjustment = this.transform.GetChild(0);
     }
 
-    void Update() {
+    new void Update() {
+        base.Update();
+
         JointSpring spring = handleRightHj.spring;
         Quaternion currentRotation = transform.rotation;
         adjustment.rotation = currentRotation * Quaternion.Euler(0, -0.5f * spring.targetPosition, 0);
@@ -40,6 +44,5 @@ public class PliersController : MonoBehaviour {
     public bool isPliersOpen() {
         return handleRightHj.spring.targetPosition >= 10;
     }
-
 
 }

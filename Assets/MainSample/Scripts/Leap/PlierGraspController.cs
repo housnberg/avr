@@ -12,7 +12,7 @@ public class PlierGraspController : BaseGraspController {
 
     private float maxTargetPosition;
 
-    public override void doGraspAction() {
+    public override void DoGraspAction() {
         spring.targetPosition = maxTargetPosition - (maxTargetPosition * hand.GrabStrength);
         handleRightHj.spring = spring;
         
@@ -23,12 +23,12 @@ public class PlierGraspController : BaseGraspController {
         }
     }
     
-    public override void cancelGraspAction() {
+    public override void CancelGraspAction() {
         spring.targetPosition = maxTargetPosition;
         handleRightHj.spring = spring;
     }
     
-    public override void init() {
+    public override void Init() {
         handleRightHj = this.GetComponentInChildren<HingeJoint>();
         spring = handleRightHj.spring;
         maxTargetPosition = spring.targetPosition;

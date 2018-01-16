@@ -260,7 +260,7 @@ public class GraspStateController : MonoBehaviour {
     private void cancelInteractionSequence() {
         this.RangeCheck.clearMonitor();
 
-        GraspableObject lastGrabbedObject = GraspManager.Instance.getLastGrabbedOject();
+        //GraspableObject lastGrabbedObject = GraspManager.Instance.getLastGrabbedOject();
 
         switch (this.InteractionState) {
             case Interactioncontroller.InteractionStates.NONE:
@@ -279,28 +279,28 @@ public class GraspStateController : MonoBehaviour {
             case Interactioncontroller.InteractionStates.TARGET_DESTROYED:
                 this.FeedbackDisplay.text = "Bitte mach die Flasche nicht kaputt.";
 
-                this.deactivateTarget(lastGrabbedObject);
-                lastGrabbedObject.transform.position = new Vector3(0, -100, 100);
-                lastGrabbedObject.transform.rotation = Quaternion.identity;
-                lastGrabbedObject.SetInitialized(false);
+                //this.deactivateTarget(lastGrabbedObject);
+                //lastGrabbedObject.transform.position = new Vector3(0, -100, 100);
+                //lastGrabbedObject.transform.rotation = Quaternion.identity;
+                //lastGrabbedObject.SetInitialized(false);
 
                 break;
             case Interactioncontroller.InteractionStates.WRONG_ORIENTATION:
                 this.FeedbackDisplay.text = "Bitte stell die Flasche richtig herum ab.";
 
-                this.deactivateTarget(lastGrabbedObject);
-                lastGrabbedObject.transform.position = new Vector3(0, -100, 100);
-                lastGrabbedObject.transform.rotation = Quaternion.identity;
-                lastGrabbedObject.SetInitialized(false);
+                //this.deactivateTarget(lastGrabbedObject);
+                //lastGrabbedObject.transform.position = new Vector3(0, -100, 100);
+                //lastGrabbedObject.transform.rotation = Quaternion.identity;
+                //lastGrabbedObject.SetInitialized(false);
 
                 break;
             case Interactioncontroller.InteractionStates.OUT_OF_BOUNDS:
                 this.FeedbackDisplay.text = "Objekt außer Reichweite.";
 
-                this.deactivateTarget(lastGrabbedObject);
-                lastGrabbedObject.transform.position = new Vector3(0, -100, 100);
-                lastGrabbedObject.transform.rotation = Quaternion.identity;
-                lastGrabbedObject.SetInitialized(false);
+                //this.deactivateTarget(lastGrabbedObject);
+                //lastGrabbedObject.transform.position = new Vector3(0, -100, 100);
+                //lastGrabbedObject.transform.rotation = Quaternion.identity;
+                //lastGrabbedObject.SetInitialized(false);
 
                 break;
         }

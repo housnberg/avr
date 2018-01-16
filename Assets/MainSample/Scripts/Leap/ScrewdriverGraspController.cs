@@ -5,7 +5,6 @@ using UnityEngine;
 public class ScrewdriverGraspController : BaseGraspController {
 
 	GraspController[] hands;
-//	Leap.Frame startGraspFrame;
 
 	Rigidbody rb;
 	GameObject connectedScrew = null;
@@ -18,7 +17,7 @@ public class ScrewdriverGraspController : BaseGraspController {
 	Vector3 startPosition;
 	Vector3 newPosition = Vector3.zero;
 
-	public override void doGraspAction ()
+	public override void DoGraspAction ()
 	{
 		if (connectedScrew != null) {
 			if (rb.constraints == RigidbodyConstraints.FreezeAll)
@@ -38,7 +37,7 @@ public class ScrewdriverGraspController : BaseGraspController {
 
 	}
 
-	public override void cancelGraspAction ()
+	public override void CancelGraspAction ()
 	{
 		if (connectedScrew != null) {
 			if (rb.constraints != RigidbodyConstraints.FreezeAll)
@@ -52,7 +51,7 @@ public class ScrewdriverGraspController : BaseGraspController {
 		}
 	}
 
-	public override void init ()
+	public override void Init ()
 	{
 		rb = GetComponent<Rigidbody> ();
 		tip = transform.Find ("TipRef");

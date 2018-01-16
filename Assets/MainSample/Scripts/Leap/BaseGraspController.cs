@@ -10,25 +10,14 @@ public abstract class BaseGraspController : MonoBehaviour {
     private GameObject handWrapper;
     private HandModel handModel;
     protected Hand hand;
-    
-    public Vector3 adjustment;
 
     private bool hasBeenAdjusted = false;
     private Transform wrapper;
     private Vector3 initialPosition;
 
-    public Rigidbody anchor;
-    public float breakForce = Mathf.Infinity;
-
-    private Joint anchorJoint;
-
     void Start () {
         this.graspableObject = this.GetComponent<GraspableObject>();
-        this.init();
-        if (anchor != null) {
-            anchorJoint = anchor.GetComponent<Joint>();
-            anchorJoint.connectedBody = this.GetComponent<Rigidbody>();
-        }
+        this.Init();
     }
 	
 	void Update () {
@@ -38,28 +27,30 @@ public abstract class BaseGraspController : MonoBehaviour {
             hand = handModel.GetLeapHand();
 
             if (graspableObject.IsGrabbed()) {
-                if (anchor != null) {
-                    anchorJoint.breakForce = breakForce;
-                }
-                doGraspAction();
+                DoGraspAction();
+
             } else {
-                cancelGraspAction();
+                CancelGraspAction();
             }
         } 
 	}
+
+    public bool IsGrabbed() {
+        return graspableObject.IsGrabbed();
+    }
     
     /// <summary>
     /// The action which should be performed when the graspable object is grasped
     /// </summary>
-    public abstract void doGraspAction();
+    public abstract void DoGraspAction();
 
     /// <summary>
     /// The action which should be performed when the graspable object is released
     /// </summary>
-    public abstract void cancelGraspAction();
+    public abstract void CancelGraspAction();
 
     /// <summary>
     /// Initialize 
     /// </summary>
-    public abstract void init();
+    public abstract void Init();
 }

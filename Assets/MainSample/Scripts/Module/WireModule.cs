@@ -19,11 +19,11 @@ public class WireModule : Module {
             }
         }
 
-        EventManager.StartListening("Cutted", Cutted);
+        EventManager.StartListening("Cutted", OnCutted);
         EventManager.StartListening("CuttedFalse", CuttedFalse);
     }
 
-    void Cutted() {
+    void OnCutted() {
         amountCuttedWires++;
         if (amountCuttedWires == amountCutableWires) {
             ModulePassed(true);
