@@ -5,13 +5,15 @@ public class ToolHitableObject : BaseHitableObject {
 
     public Vector3 targetPosition;
     public Transform anchor;
-
+    
     private Vector3 initialPosition;
     private Rigidbody rb;
     private bool isMoving;
     private bool isRotating;
 
-    void Start() {
+    new void Start() {
+        base.Start();
+
         rb = GetComponent<Rigidbody>();
         initialPosition = transform.position;
 
@@ -20,7 +22,9 @@ public class ToolHitableObject : BaseHitableObject {
         }
     }
 
-    void Update() {
+    new void Update() {
+        base.Update();
+
         if (shouldDoHitAction()) {
             isMoving = true;
         }
