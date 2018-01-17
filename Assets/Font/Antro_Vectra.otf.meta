@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: a8e73ea56d6541c4da4738d9623339b4
+timeCreated: 1515789829
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Antro Vectra
+  fontNames:
+  - Antro Vectra
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -3,7 +3,6 @@ using System.Collections;
 using Leap;
 
 public class GraspController : MonoBehaviour {
-
     private static bool Verbose = false;
     public enum GraspState {
         GRASPED,
@@ -119,8 +118,9 @@ public class GraspController : MonoBehaviour {
         if (hover != this.ActiveObject && this.ActiveObject != null) {
             GraspableObject oldGraspable = ActiveObject.GetComponent<GraspableObject>();
 
-            if (oldGraspable != null)
+            if (oldGraspable != null) {
                 oldGraspable.OnStopHover();
+            }
         }
 
         if (hover != null) {
@@ -140,9 +140,9 @@ public class GraspController : MonoBehaviour {
             return;
 
         HandModel handModel = this.GetComponent<HandModel>();
-
         GraspableObject graspable = this.ActiveObject.GetComponent<GraspableObject>();
         Leap.Utils.IgnoreCollisions(this.gameObject, this.ActiveObject.gameObject, true);
+        GraspManager.Instance.setLastGrabbedOject(graspable);
 
         // Setup initial position and rotation conditions.
         this.PalmRotation = handModel.GetPalmRotation();
@@ -151,7 +151,6 @@ public class GraspController : MonoBehaviour {
         // If we don't center the object, find the closest point in the collider for our grab point.
         if (graspable == null || !graspable.CenterGraspedObject) {
             Vector3 deltaPosition = ActiveObject.transform.position - this.CurrentGraspCenter;
-            Debug.Log("TRANSFORM " + ActiveObject.transform.position);
 
             Ray graspRay = new Ray(this.CurrentGraspCenter, deltaPosition);
             RaycastHit graspHit;
@@ -259,7 +258,7 @@ public class GraspController : MonoBehaviour {
             Vector3 centroid = leapHand.Fingers[1].TipPosition.ToUnityScaled() * .25f + leapHand.Fingers[2].TipPosition.ToUnityScaled() * .25f + leapHand.Fingers[3].TipPosition.ToUnityScaled() * .25f + leapHand.Fingers[4].TipPosition.ToUnityScaled() * .25f;
             float distance = Vector3.Distance(leapHand.PalmPosition.ToUnityScaled(), centroid);
             if (distance <= GraspController.MIN_FINGER_TO_PALM_DISTANCE) {
-                ContainerController containerController = GameObject.FindGameObjectWithTag("Container").GetComponent<ContainerController>();
+                ContainerController containerController = GameObject.FindGameObjectWithTag(TagConstants.CONTAINER).GetComponent<ContainerController>();
                 containerController.initiateDestructionByGrabbing(this.ActiveObject.gameObject);
                 return GraspState.RELEASED;
             }

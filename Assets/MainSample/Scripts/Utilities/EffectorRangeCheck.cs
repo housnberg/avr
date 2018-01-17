@@ -41,9 +41,12 @@ public class EffectorRangeCheck : MonoBehaviour
         }
     }
 
-    public void monitorObject(GameObject monitoredObject)
-    {
+    public void monitorObject(GameObject monitoredObject) {
         this.monitoredObjects.Add(monitoredObject);
+    }
+
+    public void removeMonitoredObject(GameObject monitoredObject) {
+        this.monitoredObjects.Remove(monitoredObject);
     }
 
     public void clearMonitor()

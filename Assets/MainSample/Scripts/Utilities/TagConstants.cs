@@ -16,4 +16,5 @@ internal static class TagConstants {
     public const string FINGER_TIP = "FingerTip";
     public const string LEFT_CASE_BUTTON = "LeftCaseButton";
     public const string RIGHT_CASE_BUTTON = "RightCaseButton";
+
 }

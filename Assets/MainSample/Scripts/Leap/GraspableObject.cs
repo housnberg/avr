@@ -69,6 +69,8 @@ public class GraspableObject : MonoBehaviour {
     public Material HighlightMaterial;
     private Material backupMaterial;
 
+    private bool isInitialized = false;
+
     public enum GraspDirection {
         NONE,
         UPRIGHT,
@@ -97,6 +99,7 @@ public class GraspableObject : MonoBehaviour {
     }
 
     public virtual void OnStartHover() {
+        Debug.Log("Start Hover");
         this.Hovered = true;
     }
 
@@ -252,4 +255,14 @@ public class GraspableObject : MonoBehaviour {
     public long GetResponseTime() {
         return this.ResponseTime;
     }
+
+    public bool IsInitialized() {
+        return isInitialized;
+    }
+
+    public void SetInitialized(bool isInitialized) {
+        this.isInitialized = isInitialized;
+    }
+
+
 }

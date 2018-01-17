@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 3517df43d77ac04429af2b91db1f0815
+timeCreated: 1515152630
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: LCD AT&T Phone Time/Date
+  fontNames:
+  - LCD AT&T Phone Time/Date
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
