@@ -257,7 +257,7 @@ public class GraspController : MonoBehaviour {
             // use for instance the FindGameObjectWithTag method.
             Vector3 centroid = leapHand.Fingers[1].TipPosition.ToUnityScaled() * .25f + leapHand.Fingers[2].TipPosition.ToUnityScaled() * .25f + leapHand.Fingers[3].TipPosition.ToUnityScaled() * .25f + leapHand.Fingers[4].TipPosition.ToUnityScaled() * .25f;
             float distance = Vector3.Distance(leapHand.PalmPosition.ToUnityScaled(), centroid);
-            if (distance <= GraspController.MIN_FINGER_TO_PALM_DISTANCE) {
+			if (false) {//distance <= GraspController.MIN_FINGER_TO_PALM_DISTANCE) {
                 ContainerController containerController = GameObject.FindGameObjectWithTag(TagConstants.CONTAINER).GetComponent<ContainerController>();
                 containerController.initiateDestructionByGrabbing(this.ActiveObject.gameObject);
                 return GraspState.RELEASED;

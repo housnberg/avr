@@ -22,7 +22,7 @@ public class RaycastHitter : MonoBehaviour {
         
         if (Physics.Raycast(transform.position, forward, out hit)) {
             currentHittedObject = hit.collider.GetComponent<BaseHitableObject>();
-            Debug.Log("currentHittedObject: " + currentHittedObject);
+//            Debug.Log("currentHittedObject: " + currentHittedObject);
             if (currentHittedObject != null) {
                 if (currentHittedObject.Equals(lastHittedObject)) {
                     hitTime += Time.deltaTime;

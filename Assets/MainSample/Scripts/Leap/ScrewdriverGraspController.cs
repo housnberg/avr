@@ -20,14 +20,17 @@ public class ScrewdriverGraspController : BaseGraspController {
 	public override void DoGraspAction ()
 	{
 		if (connectedScrew != null) {
-			if (rb.constraints == RigidbodyConstraints.FreezeAll)
+			if (rb.constraints == RigidbodyConstraints.FreezeAll && rotationDelta >= 0) {
 				rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
-			
+			} else if (rotationDelta < 0) {
+				rb.constraints |= RigidbodyConstraints.FreezeRotationY;
+			}
+
 			if (overallRotationDelta > rotationThreshold) {
 				disconnectScrew ();
 			} else {
-				rotationDelta = Quaternion.Angle (startRotation, transform.rotation);
-				print (overallRotationDelta);
+				rotationDelta = (transform.rotation * Quaternion.Inverse (startRotation)).y;
+				print (rotationDelta);
 				// move screwdriver upwards while unscrewing
 				float screwLength = (tip.position - connectedScrew.transform.position).magnitude;
 				newPosition = startPosition + new Vector3(.0f, (rotationDelta/rotationThreshold)*screwLength, .0f);
@@ -81,7 +84,7 @@ public class ScrewdriverGraspController : BaseGraspController {
 	public void disconnectScrew ()
 	{
 		print ("disconnecting");
-		connectedScrew.GetComponentInChildren<ScrewController> ().enabled = false;
+		connectedScrew.GetComponentInChildren<ScrewController> ().Disconnect ();
 		connectedScrew.GetComponentInChildren<BoxCollider> ().enabled = false;
 		this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 
