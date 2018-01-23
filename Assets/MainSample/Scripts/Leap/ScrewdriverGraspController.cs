@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Leap;
 
 public class ScrewdriverGraspController : BaseGraspController {
+
+    public float looseningThreshold = 0.2f;
 
 	GraspController[] hands;
 
@@ -16,10 +19,18 @@ public class ScrewdriverGraspController : BaseGraspController {
 	float rotationThreshold = 500f;
 	Vector3 startPosition;
 	Vector3 newPosition = Vector3.zero;
+    Vector3 startHandPosition;
 
-	public override void DoGraspAction ()
+    public override void DoGraspAction ()
 	{
-		if (connectedScrew != null) {
+        if (connectedScrew != null) {
+            Debug.Log("################# " + ((hand.PalmPosition.ToUnityScaled() - startHandPosition).magnitude > looseningThreshold));
+            if ((hand.PalmPosition.ToUnityScaled() - startHandPosition).magnitude > looseningThreshold) {
+                Debug.Log("################# " + (hand.PalmPosition.ToUnityScaled() - startHandPosition).magnitude);
+                this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+                    connectedScrew.transform.parent = null;
+                    connectedScrew = null;
+            }
 			if (rb.constraints == RigidbodyConstraints.FreezeAll && rotationDelta >= 0) {
 				rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
 			} else if (rotationDelta < 0) {
@@ -75,7 +86,8 @@ public class ScrewdriverGraspController : BaseGraspController {
 		connectedScrew.transform.parent = transform;
 
 		hands = GameObject.FindObjectsOfType<GraspController>();
-		foreach (GraspController hand in hands) {
+        startHandPosition = hand.PalmPosition.ToUnityScaled();
+        foreach (GraspController hand in hands) {
 			hand.requestRelease();
 		}
 

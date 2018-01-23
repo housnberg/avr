@@ -4,7 +4,15 @@ timeCreated: 18446744011573954816
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: Shelf
+    100002: //RootNode
+    400000: Shelf
+    400002: //RootNode
+    2300000: Shelf
+    3300000: Shelf
     4300000: Shelf
+    7400000: Default Take
+    11100000: //RootNode
   externalObjects: {}
   materials:
     importMaterials: 1

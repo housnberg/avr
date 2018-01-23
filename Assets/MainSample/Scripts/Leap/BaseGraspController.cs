@@ -8,7 +8,7 @@ public abstract class BaseGraspController : MonoBehaviour {
 
     private GraspableObject graspableObject;
     private GameObject handWrapper;
-    private HandModel handModel;
+    protected HandModel handModel;
     protected Hand hand;
 
     private bool hasBeenAdjusted = false;
