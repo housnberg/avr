@@ -14,9 +14,13 @@ public abstract class BaseGraspController : MonoBehaviour {
     private bool hasBeenAdjusted = false;
     private Transform wrapper;
     private Vector3 initialPosition;
+    private BaseHitableObject baseHitable;
+
+    private bool isResetted;
 
     void Start () {
         this.graspableObject = this.GetComponent<GraspableObject>();
+        this.baseHitable = this.GetComponent<BaseHitableObject>();
         this.Init();
     }
 	
@@ -27,9 +31,15 @@ public abstract class BaseGraspController : MonoBehaviour {
             hand = handModel.GetLeapHand();
 
             if (graspableObject.IsGrabbed()) {
+                if (baseHitable != null) {
+                    baseHitable.SetCurrentlyHitable(false);
+                    isResetted = false;
+                }
                 DoGraspAction();
-
             } else {
+                if (baseHitable != null) {
+                    ResetState();
+                }
                 CancelGraspAction();
             }
         } 
@@ -53,4 +63,11 @@ public abstract class BaseGraspController : MonoBehaviour {
     /// Initialize 
     /// </summary>
     public abstract void Init();
+
+    private void ResetState() {
+        if (!isResetted) {
+            baseHitable.SetCurrentlyHitable(true);
+            isResetted = true;
+        }
+    }
 }

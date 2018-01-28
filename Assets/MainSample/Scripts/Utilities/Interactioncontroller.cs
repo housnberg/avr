@@ -21,8 +21,6 @@ public class Interactioncontroller : MonoBehaviour
         NONE,
         // Target destroyed
         TARGET_DESTROYED,
-        // wrong orientation
-        WRONG_ORIENTATION,
         // object left bounds
         OUT_OF_BOUNDS,
         //object landed in ending position

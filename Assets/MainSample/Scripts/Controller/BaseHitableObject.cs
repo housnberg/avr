@@ -4,10 +4,11 @@ public abstract class BaseHitableObject : MonoBehaviour {
 
     public ProgressBar progressBar;
     public float interval = 2f;
-    public float speed = 2;
+    public float moveSpeed = 2;
 
     protected bool isHitted = false;
     protected float hitTime = 0;
+    protected bool isCurrentlyHitable = true;
 
     private ProgressBar progressBarInstance;
 
@@ -22,11 +23,10 @@ public abstract class BaseHitableObject : MonoBehaviour {
 
     protected void Update() {
         if (progressBarInstance != null) {
-            if (isHitted) {
+            if (isHitted && isCurrentlyHitable) {
                 progressBarInstance.gameObject.SetActive(true);
                 progressBarInstance.UpdateProgressBar(Normalize(hitTime));
-            }
-            else {
+            } else {
                 progressBarInstance.gameObject.SetActive(false);
             }
         }
@@ -38,6 +38,14 @@ public abstract class BaseHitableObject : MonoBehaviour {
 
     public void SetHitTime(float hitTime) {
         this.hitTime = hitTime;
+    }
+
+    public bool GetCurrentlyHitable() {
+        return isCurrentlyHitable;
+    }
+
+    public void SetCurrentlyHitable(bool currentlyHitable) {
+        this.isCurrentlyHitable = currentlyHitable;
     }
 
     protected bool shouldDoHitAction() {

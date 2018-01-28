@@ -18,12 +18,19 @@ public class RaycastHitter : MonoBehaviour {
         Vector3 forward = transform.TransformDirection(Vector3.forward) * 10;
         if (debugRaycast) {
             Debug.DrawRay(transform.position, forward, Color.green);
+            Debug.DrawRay(new Vector3(transform.position.x - 0.005f, transform.position.y, transform.position.z), forward, Color.green);
+            Debug.DrawRay(new Vector3(transform.position.x + 0.005f, transform.position.y, transform.position.z), forward, Color.green);
+            Debug.DrawRay(new Vector3(transform.position.x, transform.position.y - 0.005f, transform.position.z), forward, Color.green);
+            Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 0.005f, transform.position.z), forward, Color.green);
         }
         
-        if (Physics.Raycast(transform.position, forward, out hit)) {
+        if (Physics.Raycast(transform.position, forward, out hit)
+            || Physics.Raycast(new Vector3(transform.position.x - 0.005f, transform.position.y, transform.position.z), forward, out hit)
+            || Physics.Raycast(new Vector3(transform.position.x + 0.005f, transform.position.y, transform.position.z), forward, out hit)
+            || Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.005f, transform.position.z), forward, out hit)
+            || Physics.Raycast(new Vector3(transform.position.x, transform.position.y + 0.005f, transform.position.z), forward, out hit)) {
             currentHittedObject = hit.collider.GetComponent<BaseHitableObject>();
-//            Debug.Log("currentHittedObject: " + currentHittedObject);
-            if (currentHittedObject != null) {
+            if (currentHittedObject != null && currentHittedObject.GetCurrentlyHitable()) {
                 if (currentHittedObject.Equals(lastHittedObject)) {
                     hitTime += Time.deltaTime;
                     currentHittedObject.SetHitted(true);

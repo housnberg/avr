@@ -142,7 +142,6 @@ public class GraspController : MonoBehaviour {
         HandModel handModel = this.GetComponent<HandModel>();
         GraspableObject graspable = this.ActiveObject.GetComponent<GraspableObject>();
         Leap.Utils.IgnoreCollisions(this.gameObject, this.ActiveObject.gameObject, true);
-        GraspManager.Instance.setLastGrabbedOject(graspable);
 
         // Setup initial position and rotation conditions.
         this.PalmRotation = handModel.GetPalmRotation();
@@ -329,29 +328,40 @@ public class GraspController : MonoBehaviour {
         Quaternion targetRotation = this.PalmRotation * this.RotationFromPalm;
 
         GraspableObject graspable = ActiveObject.gameObject.GetComponent<GraspableObject>();
-
         if (graspable != null) {
-            Vector3 targetPosition = this.SmoothedGraspPosition + targetRotation * this.GraspOffset;
-            targetPosition.x = Mathf.Clamp(targetPosition.x, MinMovement.x, MaxMovement.x);
-            targetPosition.y = Mathf.Clamp(targetPosition.y, MinMovement.y, MaxMovement.y);
-            targetPosition.z = Mathf.Clamp(targetPosition.z, MinMovement.z, MaxMovement.z);
-            Vector3 velocity = (targetPosition - ActiveObject.transform.position) / Time.deltaTime;
-            this.ActiveObject.GetComponent<Rigidbody>().velocity = velocity;
-        }
+            if (graspable.adjustGraspingToPalm) {
+                HandModel handModel = this.GetComponent<HandModel>();
 
-        Quaternion deltaRotation = targetRotation * Quaternion.Inverse(this.ActiveObject.transform.rotation);
+                Vector3 palmPosition = handModel.GetPalmPosition();
+                Vector3 positionOffset = graspable.positionOffset;
+                Vector3 rotationOffset = graspable.rotatationOffset;
+                
+                graspable.transform.rotation = handModel.GetPalmRotation();
+                graspable.transform.rotation *= Quaternion.Euler(rotationOffset.x, rotationOffset.y, rotationOffset.z);
+                
+                graspable.transform.position = handModel.GetPalmPosition();
+                graspable.transform.position = graspable.transform.position + (handModel.GetPalmNormal() * positionOffset.z) + (handModel.palm.transform.forward * positionOffset.y) + (handModel.palm.transform.right * positionOffset.x); 
+            } else {
+                Vector3 targetPosition = this.SmoothedGraspPosition + targetRotation * this.GraspOffset;
+                targetPosition.x = Mathf.Clamp(targetPosition.x, MinMovement.x, MaxMovement.x);
+                targetPosition.y = Mathf.Clamp(targetPosition.y, MinMovement.y, MaxMovement.y);
+                targetPosition.z = Mathf.Clamp(targetPosition.z, MinMovement.z, MaxMovement.z);
+                Vector3 velocity = (targetPosition - ActiveObject.transform.position) / Time.deltaTime;
+                this.ActiveObject.GetComponent<Rigidbody>().velocity = velocity;
 
-        if (graspable != null) {
-            float angle = 0.0f;
-            Vector3 axis = Vector3.zero;
-            deltaRotation.ToAngleAxis(out angle, out axis);
+                Quaternion deltaRotation = targetRotation * Quaternion.Inverse(this.ActiveObject.transform.rotation);
 
-            if (angle >= 180) {
-                angle = 360 - angle;
-                axis = -axis;
-            }
-            if (angle != 0) {
-                this.ActiveObject.GetComponent<Rigidbody>().angularVelocity = angle * axis;
+                float angle = 0.0f;
+                Vector3 axis = Vector3.zero;
+                deltaRotation.ToAngleAxis(out angle, out axis);
+
+                if (angle >= 180) {
+                    angle = 360 - angle;
+                    axis = -axis;
+                }
+                if (angle != 0) {
+                    this.ActiveObject.GetComponent<Rigidbody>().angularVelocity = angle * axis;
+                }
             }
         }
     }
@@ -384,8 +394,13 @@ public class GraspController : MonoBehaviour {
             this.ActiveObject.GetComponent<Rigidbody>().AddTorque(strength * RotationFiltering * angle * axis,
                                                                   ForceMode.Acceleration);
         }
+        if (graspable != null) {
+            Debug.Log("#################");
+            HandModel handModel = this.GetComponent<HandModel>();
+            graspable.transform.rotation = handModel.GetPalmRotation();
+        }
     }
-
+    
     void FixedUpdate() {
         this.UpdatePalmRotation();
         this.UpdateGraspPosition();
@@ -419,4 +434,5 @@ public class GraspController : MonoBehaviour {
         }
         this.CurrentGraspState = newGraspState;
     }
+
 }

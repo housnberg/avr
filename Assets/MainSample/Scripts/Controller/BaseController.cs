@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class BaseController : MonoBehaviour {
 
-    public float speed = 2f;
+    private const float MOVEMENT_THRESHOLD = 0.25f;
+
+    public float moveSpeed = 2f;
     public bool rmvParentOnReset = true;
 
     private Vector3 initialPosition;
     private Quaternion initialRotation;
     private Rigidbody rb;
-
     private bool isMoving = false;
 
     //Sometimes we need information about the grasping state
@@ -41,7 +42,12 @@ public class BaseController : MonoBehaviour {
 
     private void Move(Vector3 targetPosition) {
         float distance = Vector3.Distance(transform.position, targetPosition);
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * distance * speed);
+
+        if (distance < MOVEMENT_THRESHOLD) {
+            distance = MOVEMENT_THRESHOLD;
+        }
+
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * distance * moveSpeed);
         rb.useGravity = false;
         rb.isKinematic = true;
 

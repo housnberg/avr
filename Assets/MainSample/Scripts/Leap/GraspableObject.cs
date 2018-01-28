@@ -65,6 +65,10 @@ public class GraspableObject : MonoBehaviour {
     public GameObject TopReference;
     public GameObject BottomReference;
 
+    public bool adjustGraspingToPalm = false;
+    public Vector3 positionOffset;
+    public Vector3 rotatationOffset;
+
     public GameObject HighlightComponent;
     public Material HighlightMaterial;
     private Material backupMaterial;
@@ -236,10 +240,6 @@ public class GraspableObject : MonoBehaviour {
         }
 
         this.transform.position = this.InitialPosition;
-        //this.InitialPositionAnchor.GetComponent<HingeJoint>().connectedAnchor = angleX == 0.0f ? new Vector3(0.0f, -.8f, 0.0f) : new Vector3(0.0f, .8f, 0.0f);
-        //this.InitialPositionAnchor.GetComponent<HingeJoint>().connectedBody = this.gameObject.GetComponent<Rigidbody>();
-
-        //this.BreakableJoint = this.InitialPositionAnchor.GetComponent<Rigidbody>();
 
         if (this.HighlightComponent != null) this.HighlightComponent.GetComponent<Renderer>().material = this.backupMaterial;
     }

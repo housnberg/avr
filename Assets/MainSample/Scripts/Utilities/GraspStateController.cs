@@ -26,15 +26,6 @@ public class GraspStateController : MonoBehaviour {
     public float FeedbackIntervalInSeconds = 1.0f;
     // text element to present feedback
     public UnityEngine.UI.Text FeedbackDisplay;
-    // the to-be-grasped object
-    public GraspableObject[] Targets;
-    // jsut some generic response text (this interaction was used in one experiment)
-    private string[] positiveFeedbackTemplates = new string[] {
-        "Sehr gut",
-        "Super",
-        "Gut gemacht"
-    };
-
     //actual hand controller that handles the Leap data;
     public SimplifiedHandController HandControllerReference;
     // current state in the sequence
@@ -54,6 +45,8 @@ public class GraspStateController : MonoBehaviour {
     // sensor lost the hand in between
     private int CurrentHandID;
     
+    private static long InitialPoseDuration = 500L;
+    private long PoseCheckTimeStamp;
     // just to control if and when the interaction state is checked (see the Update method)
     private bool CheckInteractionState;
     // the meta-controller, it is notified when the interaction is finished
@@ -64,29 +57,20 @@ public class GraspStateController : MonoBehaviour {
     private Action InteractionStateUpdateDelegate;
 
     void Awake() {
-        GameObject rangeCheckContainer = GameObject.FindGameObjectWithTag(TagConstants.RANGE_CHECK);
+        GameObject rangeCheckContainer = GameObject.FindGameObjectWithTag("RangeCheck");
         this.RangeCheck = rangeCheckContainer.GetComponent<EffectorRangeCheck>();
         this.RangeCheck.ObjectLeftBounds += this.rangeCheckHandler;
 
         // register container controller
-        GameObject container = GameObject.FindGameObjectWithTag(TagConstants.CONTAINER);
+        GameObject container = GameObject.FindGameObjectWithTag("Container");
         if (container != null) {
             ContainerController containerController = container.GetComponent<ContainerController>();
             if (containerController != null) {
-                containerController.ObjectWasReleased += this.checkTargetPosition;
                 containerController.ObjectWasDestroyed += this.checkTargetDestruction;
             }
         }
 
-        foreach(GraspableObject target in Targets) {
-            target.gameObject.SetActive(true);
-            target.transform.position = new Vector3(0, -100, 100);
-            target.GetComponent<Rigidbody>().isKinematic = true;
-        }
-
-        this.InteractionStateUpdateDelegate = delegate () {
-            this.InteractionStateUpdate();
-        };
+        this.InteractionStateUpdateDelegate = delegate () { this.InteractionStateUpdate(); };
 
         //setup interaction control
         this.CurrentInteractionState = new InteractionStateObject();
@@ -101,39 +85,25 @@ public class GraspStateController : MonoBehaviour {
         if (container != null) {
             ContainerController containerController = container.GetComponent<ContainerController>();
             if (containerController != null) {
-                containerController.ObjectWasReleased -= this.checkTargetPosition;
                 containerController.ObjectWasDestroyed -= this.checkTargetDestruction;
             }
         }
+
         this.RangeCheck.ObjectLeftBounds -= this.rangeCheckHandler;
     }
-
 
     // Update is called once per frame
     void Update() {
         if (!this.Started && GraspStateController.IsActive) {
             this.Started = true;
+            this.PoseCheckTimeStamp = -1L;
             this.CurrentInteractionState.InteractionStage = InteractionStage.STARTUP;
-            this.InteractionStateUpdate();
-        }
-        // check pose
-        if (this.Started && GraspStateController.IsActive && this.CurrentInteractionState.InteractionStage == InteractionStage.STARTUP) {
-            //this.checkInitialPose();
-            //For now, we will set the 
-            this.CurrentHandID = this.HandControllerReference.currentRightHandID;
-            this.CurrentInteractionState.InteractionStage = InteractionStage.TARGET_PRESENTATION;
             this.InteractionStateUpdate();
         }
 
         // target presentation check
         if (this.Started && GraspStateController.IsActive && this.CurrentInteractionState.InteractionStage == InteractionStage.TARGET_PRESENTATION) {
-            /*
-            if (GraspStateController.Verbose) UnityEngine.Debug.Log("target presentation check...");
-            if (!this.HandPoseController.checkInitialPose())
-            {
-                this.cancelAndResetInteractionSequence();
-            }
-            */
+            //Do nothing 
         }
 
         //check hand during trajectory
@@ -146,6 +116,7 @@ public class GraspStateController : MonoBehaviour {
 
         //checkInteractionState = true after fixation
         if (this.Started && GraspStateController.IsActive && this.CheckInteractionState) {
+
             if (this.InteractionState != Interactioncontroller.InteractionStates.NONE) {
                 this.InteractionStateUpdate();
                 // just paranoia
@@ -191,47 +162,17 @@ public class GraspStateController : MonoBehaviour {
         switch (this.CurrentInteractionState.InteractionStage) {
             case InteractionStage.STARTUP:
                 if (GraspStateController.Verbose) UnityEngine.Debug.Log("startup...");
+                
                 this.FeedbackDisplay.text = "";
 
                 if (GraspStateController.Verbose) UnityEngine.Debug.Log("startup done...");
                 break;
             case InteractionStage.TARGET_PRESENTATION:
-                // just paranoia, it is highly unlikely that something like this happens
-                /*
-                if (this.Target.GetComponent<GraspableObject>().IsGrabbed()) {
-                    GraspController[] hands = GameObject.FindObjectsOfType<GraspController>();
-
-                    foreach (GraspController hand in hands) {
-                        hand.requestRelease();
-                    }
-                }
-                */
-                foreach (GraspableObject target in Targets) {
-                    if (!target.IsInitialized()) {
-                        if (this.bottleOrientationMode == "upright") {
-                            target.ResetPositionAndOrientation(0.0f, this.InitialTargetPosition);
-                            if (GraspStateController.Verbose) Debug.Log("upright target...");
-                        }
-                        else if (this.bottleOrientationMode == "upsidedown") {
-                            target.ResetPositionAndOrientation(180.0f, this.InitialTargetPosition);
-                            if (GraspStateController.Verbose) Debug.Log("rotated target...");
-                        }
-
-                        target.GetComponent<Rigidbody>().isKinematic = false;
-                        target.GetComponent<Rigidbody>().useGravity = true;
-                        target.SetInitialized(true);
-                    }
-                }
-
                 this.CurrentInteractionState.InteractionStage = InteractionStage.GRASPING_INTERACTION;
                 // enable range check
                 this.InteractionState = Interactioncontroller.InteractionStates.NONE;
                 this.CheckInteractionState = true;
                 this.RangeCheck.clearMonitor();
-                // TODO: add the target to the monitor, have a look at the EffectorRangeCheck script
-                foreach(GraspableObject target in Targets) {
-                    this.RangeCheck.monitorObject(target.gameObject);
-                }
 
                 if (Verbose) Debug.Log("current interaction state: " + CurrentInteractionState.InteractionStage);
                 break;
@@ -242,13 +183,12 @@ public class GraspStateController : MonoBehaviour {
 
                 if (this.InteractionState != Interactioncontroller.InteractionStates.IN_BOX) {
                     this.cancelInteractionSequence();
-                } else {
-                    this.FeedbackDisplay.text = this.positiveFeedbackTemplates[UnityEngine.Random.Range(0, this.positiveFeedbackTemplates.Length - 1)];
-
-                    //this.deactivateTarget();
+                }  else {
                     this.InteractionState = Interactioncontroller.InteractionStates.NONE;
                     // clear monitor
                     this.RangeCheck.clearMonitor();
+
+                    this.PoseCheckTimeStamp = -1L;
                 }
                 this.CurrentInteractionState.InteractionStage = InteractionStage.WAITING;
                 StartCoroutine(this.FeedbackInterval());
@@ -260,48 +200,15 @@ public class GraspStateController : MonoBehaviour {
     private void cancelInteractionSequence() {
         this.RangeCheck.clearMonitor();
 
-        //GraspableObject lastGrabbedObject = GraspManager.Instance.getLastGrabbedOject();
-
         switch (this.InteractionState) {
             case Interactioncontroller.InteractionStates.NONE:
                 this.FeedbackDisplay.text = "Die Hand muss im Sensorbereich bleiben.";
-
-                foreach (GraspableObject target in Targets) {
-                    this.deactivateTarget(target);
-                }
-                foreach (GraspableObject target in Targets) {
-                    target.transform.position = new Vector3(0, -100, 100);
-                    target.transform.rotation = Quaternion.identity;
-                    target.SetInitialized(false);
-                }
-
                 break;
             case Interactioncontroller.InteractionStates.TARGET_DESTROYED:
                 this.FeedbackDisplay.text = "Bitte mach die Flasche nicht kaputt.";
-
-                //this.deactivateTarget(lastGrabbedObject);
-                //lastGrabbedObject.transform.position = new Vector3(0, -100, 100);
-                //lastGrabbedObject.transform.rotation = Quaternion.identity;
-                //lastGrabbedObject.SetInitialized(false);
-
-                break;
-            case Interactioncontroller.InteractionStates.WRONG_ORIENTATION:
-                this.FeedbackDisplay.text = "Bitte stell die Flasche richtig herum ab.";
-
-                //this.deactivateTarget(lastGrabbedObject);
-                //lastGrabbedObject.transform.position = new Vector3(0, -100, 100);
-                //lastGrabbedObject.transform.rotation = Quaternion.identity;
-                //lastGrabbedObject.SetInitialized(false);
-
                 break;
             case Interactioncontroller.InteractionStates.OUT_OF_BOUNDS:
                 this.FeedbackDisplay.text = "Objekt außer Reichweite.";
-
-                //this.deactivateTarget(lastGrabbedObject);
-                //lastGrabbedObject.transform.position = new Vector3(0, -100, 100);
-                //lastGrabbedObject.transform.rotation = Quaternion.identity;
-                //lastGrabbedObject.SetInitialized(false);
-
                 break;
         }
     }
@@ -310,30 +217,6 @@ public class GraspStateController : MonoBehaviour {
         if (GraspStateController.Verbose) UnityEngine.Debug.Log(checkedObject.name + " left bounds...");
         this.InteractionState = Interactioncontroller.InteractionStates.OUT_OF_BOUNDS;
         this.cancelAndResetInteractionSequence();
-    }
-
-    private void deactivateTarget(GraspableObject target) {
-        target.GetComponent<Rigidbody>().useGravity = false;
-        target.GetComponent<Rigidbody>().isKinematic = true;
-        target.transform.position = new Vector3(0, -100, 100);
-        target.transform.rotation = Quaternion.identity;
-        if (target.GetComponent<GraspableObject>().BreakableJoint != null) {
-            Joint joint = target.GetComponent<GraspableObject>().BreakableJoint.GetComponent<Joint>();
-            if (joint != null) {
-                joint.connectedBody = null;
-            }
-        }
-    }
-
-    private void checkTargetPosition(GameObject gameObject, bool validOrientation) {
-        if (!GraspStateController.IsActive) {
-            return;
-        }
-
-        if (this.InteractionState == Interactioncontroller.InteractionStates.NONE && this.CurrentInteractionState.InteractionStage == InteractionStage.GRASPING_INTERACTION) {
-            if (GraspStateController.Verbose) UnityEngine.Debug.Log("target in position...");
-            this.InteractionState = validOrientation ? Interactioncontroller.InteractionStates.IN_BOX : Interactioncontroller.InteractionStates.WRONG_ORIENTATION;
-        }
     }
 
     private void checkTargetDestruction(GameObject gameObject) {
