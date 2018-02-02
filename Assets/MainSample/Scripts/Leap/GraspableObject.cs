@@ -7,10 +7,13 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using cakeslice;
 
 public class GraspableObject : MonoBehaviour {
     private static readonly DateTime Jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0);
     public static long Millis { get { return (long)((DateTime.Now - Jan1St1970).TotalMilliseconds); } }
+
+    public bool visualizeGrasping = true;
 
     // if true some diagnostic information is printed to the console
     private static bool Verbose = false;
@@ -75,6 +78,9 @@ public class GraspableObject : MonoBehaviour {
 
     private bool isInitialized = false;
 
+    private Renderer[] renderers;
+    private Outline[] outlines;
+
     public enum GraspDirection {
         NONE,
         UPRIGHT,
@@ -92,6 +98,17 @@ public class GraspableObject : MonoBehaviour {
         if (this.HighlightComponent != null) {
             this.backupMaterial = this.HighlightComponent.GetComponent<Renderer>().material;
         }
+
+        if (visualizeGrasping) {
+            renderers = GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers) {
+                renderer.transform.gameObject.AddComponent<Outline>();
+            }
+
+            outlines = GetComponentsInChildren<Outline>();
+            EnableOutlines(false);
+        }
+
     }
 
     public bool IsHovered() {
@@ -133,7 +150,7 @@ public class GraspableObject : MonoBehaviour {
         }
         this.GetComponent<Rigidbody>().useGravity = false;
 
-        if (this.HighlightComponent != null) this.HighlightComponent.GetComponent<Renderer>().material = this.HighlightMaterial;
+        EnableOutlines(true);
     }
 
     public virtual bool OnRelease(GameObject hand) {
@@ -158,6 +175,7 @@ public class GraspableObject : MonoBehaviour {
 
         if (this.HighlightComponent != null) this.HighlightComponent.GetComponent<Renderer>().material = this.backupMaterial;
 
+        EnableOutlines(false);
         return false;
     }
 
@@ -240,6 +258,10 @@ public class GraspableObject : MonoBehaviour {
         }
 
         this.transform.position = this.InitialPosition;
+        //this.InitialPositionAnchor.GetComponent<HingeJoint>().connectedAnchor = angleX == 0.0f ? new Vector3(0.0f, -.8f, 0.0f) : new Vector3(0.0f, .8f, 0.0f);
+        //this.InitialPositionAnchor.GetComponent<HingeJoint>().connectedBody = this.gameObject.GetComponent<Rigidbody>();
+
+        //this.BreakableJoint = this.InitialPositionAnchor.GetComponent<Rigidbody>();
 
         if (this.HighlightComponent != null) this.HighlightComponent.GetComponent<Renderer>().material = this.backupMaterial;
     }
@@ -262,6 +284,14 @@ public class GraspableObject : MonoBehaviour {
 
     public void SetInitialized(bool isInitialized) {
         this.isInitialized = isInitialized;
+    }
+
+    private void EnableOutlines(bool enabled) {
+        if (outlines.Length != 0) {
+            foreach (Outline outline in outlines) {
+                outline.eraseRenderer = !enabled;
+            }
+        }
     }
 
 
