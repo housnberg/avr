@@ -30,8 +30,7 @@ public class CaseController : MonoBehaviour {
 		leftButton = GameObject.FindGameObjectWithTag(TagConstants.LEFT_CASE_BUTTON).GetComponent<CaseButtonController>();
         rightButton = GameObject.FindGameObjectWithTag(TagConstants.RIGHT_CASE_BUTTON).GetComponent<CaseButtonController>();
 
-        float test = Mathf.Sin(rotationAngle * Mathf.Deg2Rad) - 0.215f;
-        targetPosition = new Vector3(transform.position.x, test, zPosition);
+		EventManager.StartListening ("MetalplateRemoved", RotateCase);
 	}
 	
 	// Update is called once per frame
@@ -49,10 +48,14 @@ public class CaseController : MonoBehaviour {
 
         float step = speed * Time.deltaTime;
         if (isMoving) {
+			targetPosition = new Vector3(transform.position.x, transform.position.y, zPosition);
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
         }
 
         if (isRotating) {
+			float test = Mathf.Sin(rotationAngle * Mathf.Deg2Rad) - 0.215f;
+			targetPosition = new Vector3(transform.position.x, test, zPosition);
+			transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
             transform.Rotate(new Vector3(2, 0, 0));
             if (Mathf.Round(transform.eulerAngles.x) >= rotationAngle) {
                 isRotating = false;
@@ -68,6 +71,9 @@ public class CaseController : MonoBehaviour {
         yield return new WaitForSeconds(seconds);
 
         isMoving = true;
-        isRotating = true;
     }
+
+	private void RotateCase() {
+		isRotating = true;
+	}
 }

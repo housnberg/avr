@@ -6,8 +6,7 @@ public class PlateController : MonoBehaviour
 {
 	List<GameObject> screws = new List<GameObject> ();
 	// Use this for initialization
-	void Start ()
-	{
+	void Start () {
 		print ("PlateController started");
 		foreach (Transform child in transform) {
 			if (child.name.StartsWith("Screw")) {
@@ -40,10 +39,18 @@ public class PlateController : MonoBehaviour
 	}
 
 	void DetachPlate(){
+		// ignore collisions with Leap hand
+		GameObject leapHand = GameObject.FindWithTag ("Hand");
+		foreach (Collider cLeap in leapHand.GetComponentsInChildren<Collider> ()) {
+			foreach (Collider cPlate in GetComponentsInChildren<Collider> ()) {
+				Physics.IgnoreCollision(cPlate, cLeap);
+			}
+		}
+
 		Rigidbody rig = this.GetComponent<Rigidbody> ();
-		this.GetComponent<BoxCollider> ().enabled = false;
 		rig.isKinematic = false;
 		rig.AddForce (transform.up * 100);
+		EventManager.TriggerEvent ("MetalplateRemoved");
 	}
 
 }
