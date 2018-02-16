@@ -36,8 +36,8 @@ public class GameManager : MonoBehaviour {
         gameOverScreen = GameObject.Find("GameOverScreen");
         gameWonScreen = GameObject.Find("GameWonScreen");
 
-        gameOverScreen.SetActive(false);
-        gameWonScreen.SetActive(false);
+        gameOverScreen.SetActive (false);
+        gameWonScreen.SetActive (false);
 
         amountModules = GameObject.FindObjectsOfType<Module>().Length;
         timer = GameObject.FindObjectOfType<CountdownModule>();
@@ -100,4 +100,5 @@ public class GameManager : MonoBehaviour {
         Debug.Log("RESTART SCENE");
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
 }

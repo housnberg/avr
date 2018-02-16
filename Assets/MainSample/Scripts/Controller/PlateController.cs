@@ -39,18 +39,21 @@ public class PlateController : MonoBehaviour
 	}
 
 	void DetachPlate(){
-		// ignore collisions with Leap hand
-		GameObject leapHand = GameObject.FindWithTag ("Hand");
-		foreach (Collider cLeap in leapHand.GetComponentsInChildren<Collider> ()) {
-			foreach (Collider cPlate in GetComponentsInChildren<Collider> ()) {
-				Physics.IgnoreCollision(cPlate, cLeap);
-			}
-		}
+//		// ignore collisions with Leap hand
+//		Collider[] cls = GameObject.FindWithTag ("Hand").GetComponentsInChildren<Collider>();
+//		Collider[] pCls = this.GetComponentsInChildren<Collider> ();
+//		foreach (Collider cl in cls) {
+//			foreach (Collider pCl in pCls) {
+//				if (cl != null && pCl != null) {
+//					Physics.IgnoreCollision(pCl, cl, true);
+//				}
+//			}
+//		}
 
 		Rigidbody rig = this.GetComponent<Rigidbody> ();
 		rig.isKinematic = false;
-		rig.AddForce (transform.up * 100);
 		EventManager.TriggerEvent ("MetalplateRemoved");
+		rig.AddForce ((transform.up-transform.forward) * 200);
 	}
 
 }

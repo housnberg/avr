@@ -33,6 +33,7 @@ public class ToolHitableObject : BaseHitableObject {
 
         if (isMoving) {
             Move(targetPosition);
+			EventManager.TriggerEvent ("TutorialTools");
         }
     }
 

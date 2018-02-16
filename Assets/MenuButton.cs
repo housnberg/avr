@@ -25,14 +25,15 @@ public class MenuButton : MonoBehaviour {
 
             isClicked = true;
 
-            if (transform.name == "ButtonRestart") {
+			if (transform.name == "ButtonRestart" && TutorialManager.instance.tutorialCompleted) {
                 EventManager.TriggerEvent("ReloadGame");
             } else if (transform.name == "ButtonReset") {
                 EventManager.TriggerEvent("ResetTools");
+				EventManager.TriggerEvent ("TutorialReset");
             }
             
             if (clickSound != null) {
-                clickSound.Play();
+				clickSound.Play();
             }
         }
     }

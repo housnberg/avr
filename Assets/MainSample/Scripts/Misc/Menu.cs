@@ -23,6 +23,7 @@ public class Menu : MonoBehaviour {
             foreach (MenuButton button in buttons) {
                 button.gameObject.SetActive(true);
             }
+			EventManager.TriggerEvent ("TutorialMenu");
         } else {
             foreach (MenuButton button in buttons) {
                 button.gameObject.SetActive(false);
