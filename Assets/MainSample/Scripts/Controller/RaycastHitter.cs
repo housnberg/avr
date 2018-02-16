@@ -16,10 +16,9 @@ public class RaycastHitter : MonoBehaviour {
         BaseHitableObject currentHittedObject;
         Vector3 forward = transform.TransformDirection(Vector3.forward) * 10;
         if (debugRaycast) {
-            Debug.DrawRay(transform.position, forward, Color.green);
+//            Debug.DrawRay(transform.position, forward, Color.green);
         }
 		if (Physics.SphereCast (new Ray (transform.position, forward), 0.01f, out hit)) {
-//			gameObject.transform.position = hit.point;
 				currentHittedObject = hit.collider.GetComponent<BaseHitableObject>();
 				if (currentHittedObject != null && currentHittedObject.GetCurrentlyHitable()) {
 					if (currentHittedObject.Equals(lastHittedObject)) {
