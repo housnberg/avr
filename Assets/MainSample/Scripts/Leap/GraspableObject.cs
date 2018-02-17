@@ -104,11 +104,14 @@ public class GraspableObject : MonoBehaviour {
             foreach (Renderer renderer in renderers) {
                 renderer.transform.gameObject.AddComponent<Outline>();
             }
+        }
+    }
 
+    void Start() {
+        if (visualizeGrasping) {
             outlines = GetComponentsInChildren<Outline>();
             EnableOutlines(false);
         }
-
     }
 
     public bool IsHovered() {
@@ -191,6 +194,11 @@ public class GraspableObject : MonoBehaviour {
         else {
             if (GraspableObject.Verbose) Debug.Log("collision with " + other.gameObject.name + "...");
         }
+    }
+
+    void OnCollisionExit(Collision other) {
+        this.GetComponent<Rigidbody>().useGravity = true;
+        this.GetComponent<Rigidbody>().isKinematic = false;
     }
 
     IEnumerator CollisionDispatcher(GameObject hand) {
@@ -287,10 +295,8 @@ public class GraspableObject : MonoBehaviour {
     }
 
     private void EnableOutlines(bool enabled) {
-        if (outlines.Length != 0) {
-            foreach (Outline outline in outlines) {
-                outline.eraseRenderer = !enabled;
-            }
+        foreach (Outline outline in outlines) {
+            outline.enabled = enabled;
         }
     }
 

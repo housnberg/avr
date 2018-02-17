@@ -5,8 +5,8 @@
 \******************************************************************************/
 
 using UnityEngine;
-using System.Collections;
 using Leap;
+using cakeslice;
 
 /**
 * The base class for all hand models, both graphics and physics.
@@ -46,7 +46,20 @@ public abstract class HandModel : MonoBehaviour {
   /** Whether the parent HandController instance has been set to mirror across the z axis.*/
   protected bool mirror_z_axis_ = false;
 
-  public Vector3 ExternalOffset = Vector3.zero;
+    private Renderer[] renderers;
+    private Outline[] outlines;
+
+    public void Start() {
+        renderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers) {
+            renderer.transform.gameObject.AddComponent<Outline>();
+        }
+
+        outlines = GetComponentsInChildren<Outline>();
+        //EnableOutlines(false);
+    }
+
+    public Vector3 ExternalOffset = Vector3.zero;
   /** 
   * Calculates the offset between the wrist position and the controller based
   * on the HandController.handMovementScale property and the Leap hand wrist position.
@@ -297,4 +310,10 @@ public abstract class HandModel : MonoBehaviour {
   * calls this function in the FixedUpdate() phase.
   */
   public abstract void UpdateHand();
+
+    private void EnableOutlines(bool enabled) {
+        foreach (Outline outline in outlines) {
+            outline.enabled = enabled;
+        }
+    }
 }

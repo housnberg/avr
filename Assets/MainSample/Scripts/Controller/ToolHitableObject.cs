@@ -35,6 +35,13 @@ public class ToolHitableObject : BaseHitableObject {
             Move(targetPosition);
 			EventManager.TriggerEvent ("TutorialTools");
         }
+
+        if (targetPosition.Equals(transform.position)) {
+            isCurrentlyHitable = false;
+        }
+        if (transform.position.Equals(initialPosition)) {
+            isCurrentlyHitable = true;
+        }
     }
 
     private void Move(Vector3 targetPosition) {

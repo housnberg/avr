@@ -67,5 +67,10 @@ public class BaseController : MonoBehaviour {
         transform.rotation = initialRotation;
         isMoving = false;
         rb.useGravity = true;
+
+        BaseHitableObject hitable = GetComponent<BaseHitableObject>();
+        if(hitable != null) {
+            hitable.SetCurrentlyHitable(true);
+        }
     }
 }
