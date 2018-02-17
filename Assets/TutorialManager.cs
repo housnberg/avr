@@ -27,8 +27,9 @@ public class TutorialManager : MonoBehaviour {
 		tutorialScreen = GameObject.Find("TutorialScreen");
 		tutorialScreen.SetActive (true);
 
-		EventManager.StartListening ("TutorialTools", OnTutorialTools);
-	}
+		EventManager.StartListening("TutorialTools", OnTutorialTools);
+        EventManager.StartListening("TutorialCompleted", OnTutorialCompleted);
+    }
 
 	private void OnTutorialTools() {
 		Debug.Log ("Tutorial tools completed");
@@ -63,5 +64,16 @@ public class TutorialManager : MonoBehaviour {
 
 		tutorialCompleted = true;
 		EventManager.StopListening ("TutorialInstructions", OnTutorialInstructions);
+        EventManager.TriggerEvent("TutorialCompleted");
 	}
+
+    private void OnTutorialCompleted() {
+        foreach (GameObject hint in hints) {
+            hint.SetActive(false);
+        }
+        EventManager.StopListening("TutorialMenu", OnTutorialMenu);
+        EventManager.StopListening("TutorialReset", OnTutorialReset);
+        EventManager.StopListening("TutorialInstructions", OnTutorialInstructions);
+        EventManager.StopListening("TutorialTools", OnTutorialTools);
+    }
 }

@@ -16,7 +16,6 @@ public class GazeSphereController : MonoBehaviour {
 		RaycastHit hit;
 		Camera cam = Camera.main;
 		if (Physics.Raycast (cam.transform.position, cam.transform.forward, out hit)) {
-			print (transform.parent.name);
 			transform.position = hit.point;
 
 			if (scaleToDistance) {

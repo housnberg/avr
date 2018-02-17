@@ -42,6 +42,7 @@ public class CaseController : MonoBehaviour {
 
             EventManager.TriggerEvent("StartTimer");
             isOpen = true;
+            EventManager.TriggerEvent("CaseOpened");
 
             StartCoroutine(Move(delay));
 		}

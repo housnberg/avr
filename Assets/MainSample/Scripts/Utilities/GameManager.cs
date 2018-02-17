@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System;
 
 /// <summary>
 /// Singleton.
@@ -10,7 +11,8 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager instance = null;
 
-    private int amountModules;
+    private Module[] modules;
+
     private int amountSucceededModules;
 
     private CountdownModule timer;
@@ -18,9 +20,14 @@ public class GameManager : MonoBehaviour {
 
     private GameObject gameOverScreen;
     private GameObject gameWonScreen;
+    private Text instructionText;
 
     public AudioSource gameOverSound;
     public AudioSource winSound;
+    public AudioSource modulePassedSound;
+    public AudioSource backgroundMusic;
+    public Transform backgroundMusicSourceAnchor;
+    public bool playBackgroundMusic = true;
 
     private bool gameLost = false;
     private bool gameWon = false;
@@ -35,24 +42,35 @@ public class GameManager : MonoBehaviour {
 
         gameOverScreen = GameObject.Find("GameOverScreen");
         gameWonScreen = GameObject.Find("GameWonScreen");
-
         gameOverScreen.SetActive (false);
         gameWonScreen.SetActive (false);
 
-        amountModules = GameObject.FindObjectsOfType<Module>().Length;
+        modules = GameObject.FindObjectsOfType<Module>();
         timer = GameObject.FindObjectOfType<CountdownModule>();
         bomb = GameObject.FindObjectOfType<Bomb>();
+
+        instructionText = transform.Find("Instruction/Quad/Canvas/InstructionText").GetComponent<Text>();
 
         EventManager.StartListening("ModulePassed", OnModulePassed);
         EventManager.StartListening("ModuleFailed", OnModuleFailed);
         EventManager.StartListening("ReloadGame", OnReloadGame);
+
+        EventManager.StartListening("TutorialCompleted", OnTutorialCompleted);
+        EventManager.StartListening("CaseOpened", OnCaseOpened);
+        EventManager.StartListening("MetalplateRemoved", OnMetalplateRemoved);
+
+        Array.Sort(modules, delegate (Module current, Module other) {
+            return current.priority.CompareTo(other.priority);
+        });
+
+        PlayBackgroundMusic();
     }
 
     void OnModulePassed() {
-        Debug.Log("YEAH MODULE PASSED");
         if (!gameLost && !gameWon) {
             amountSucceededModules++;
-            if (amountSucceededModules == amountModules) {
+            nextSolvableModuleIntruction();
+            if (amountSucceededModules == modules.Length) {
                 gameWon = true;
                 if (winSound != null) {
                     winSound.Play();
@@ -61,7 +79,10 @@ public class GameManager : MonoBehaviour {
                 if (timer != null) {
                     timer.Stop();
                 }
-                Debug.Log("YOU DEFUSED THE BOMB!!!");
+            } else {
+                if (modulePassedSound != null) {
+                    modulePassedSound.Play();
+                }
             }
         }
     }
@@ -86,19 +107,63 @@ public class GameManager : MonoBehaviour {
         if (bomb != null) {
             bomb.Explode();
         }
-        Debug.Log("BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM");
     }
 
     private IEnumerator ShowScreenAfterSeconds(float seconds, GameObject screen) {
         yield return new WaitForSeconds(seconds);
-
-        Debug.Log("Set screen active");
+        
         screen.SetActive(true);
     }
 
     private void OnReloadGame() {
-        Debug.Log("RESTART SCENE");
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void OnTutorialCompleted() {
+        setInstructionText("OPEN THE SUITCASE BY TOUCHING THE FRONT BUTTONS SIMULTANEOUSLY\n\nBEWARE! THE DETONATION COUNTDOWN WILL START AS SOON AS YOU OPEN THE CASE!");
+    }
+
+    private void OnCaseOpened() {
+        setInstructionText("TAKE THE SCREWDRIVER AND REMOVE THE METAL PLATE TO GET TO THE CORE MODULE");
+    }
+
+    private void OnMetalplateRemoved() {
+        nextSolvableModuleIntruction();
+    }
+
+    private void nextSolvableModuleIntruction() {
+        string instruction = "No Modules left!";
+        foreach (Module module in modules) {
+            if (!module.GetPassed()) {
+                instruction = module.instruction;
+                break;
+            }
+        }
+        setInstructionText(instruction);
+    }
+
+    private void setInstructionText(string instructionText) {
+        if (instructionText != null) {
+            this.instructionText.text = instructionText;
+        }
+    }
+
+    private void PlayBackgroundMusic() {
+        if (backgroundMusic != null) {
+            if (playBackgroundMusic) {
+                float playtime = UnityEngine.Random.Range(0, backgroundMusic.clip.length / 3);
+                backgroundMusic.time = playtime;
+
+                if (backgroundMusicSourceAnchor != null) {
+                    AudioSource.PlayClipAtPoint(backgroundMusic.clip, backgroundMusicSourceAnchor.position, backgroundMusic.volume);
+                } else {
+                    backgroundMusic.Play();
+                }
+            } else {
+                backgroundMusic.Stop();
+                backgroundMusic.playOnAwake = false;
+            }
+        }
     }
 
 }

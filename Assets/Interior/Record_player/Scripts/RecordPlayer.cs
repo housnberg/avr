@@ -7,6 +7,7 @@ public class RecordPlayer : MonoBehaviour {
 //--------------------------------------------------------------------------------------------
 
     public bool recordPlayerActive = false;
+    public AudioSource music;
 
     GameObject disc;
     GameObject arm;

@@ -9,8 +9,6 @@ public class WireModule : Module {
     private int amountCutableWires = 0;
     private int amountCuttedWires = 0;
 
-    private UnityAction someListener;
-
     void Awake() {
         WireGenerator[] wires = GetComponentsInChildren<WireGenerator>();
         foreach(WireGenerator wire in wires) {

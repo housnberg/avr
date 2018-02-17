@@ -39,7 +39,7 @@ public class ToolHitableObject : BaseHitableObject {
         if (targetPosition.Equals(transform.position)) {
             isCurrentlyHitable = false;
         }
-        if (transform.position.Equals(initialPosition)) {
+        if (initialPosition == transform.position) {
             isCurrentlyHitable = true;
         }
     }
@@ -53,7 +53,7 @@ public class ToolHitableObject : BaseHitableObject {
         rb.useGravity = false;
         rb.isKinematic = true;
 
-        if (transform.position == targetPosition) {
+        if (transform.position.Equals(targetPosition)) {
             isMoving = false;
             rb.isKinematic = false;
             isCurrentlyHitable = true;
