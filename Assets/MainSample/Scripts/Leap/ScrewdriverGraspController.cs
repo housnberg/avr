@@ -10,6 +10,7 @@ public class ScrewdriverGraspController : BaseGraspController {
 	GraspController[] hands;
 
 	Rigidbody rb;
+    BaseHitableObject hitable;
 	GameObject connectedScrew = null;
 	Transform tip;
 
@@ -26,7 +27,7 @@ public class ScrewdriverGraspController : BaseGraspController {
     public override void DoGraspAction ()
 	{
         if (connectedScrew != null) {
-            if ((hand.PalmPosition.ToUnityScaled() - startHandPosition).magnitude > looseningThreshold) {
+            if ((leapHand.PalmPosition.ToUnityScaled() - startHandPosition).magnitude > looseningThreshold) {
                 this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
                 connectedScrew.transform.parent = null;
                 connectedScrew = null;
@@ -64,6 +65,7 @@ public class ScrewdriverGraspController : BaseGraspController {
 	public override void Init ()
 	{
 		rb = GetComponent<Rigidbody> ();
+        hitable = GetComponent<ToolHitableObject>();
 		tip = transform.Find ("TipRef");
 		screwLength = -1;
 	}
@@ -85,11 +87,10 @@ public class ScrewdriverGraspController : BaseGraspController {
 		}
 		
 		hands = GameObject.FindObjectsOfType<GraspController>();
-        startHandPosition = hand.PalmPosition.ToUnityScaled();
+        startHandPosition = leapHand.PalmPosition.ToUnityScaled();
         foreach (GraspController hand in hands) {
 			hand.requestRelease();
 		}
-
 	}
 
 	public void disconnectScrew ()
@@ -104,5 +105,13 @@ public class ScrewdriverGraspController : BaseGraspController {
 		connectedScrew.transform.parent = null;
 		connectedScrew = null;
 
-	}
+        if (hitable != null) {
+            hitable.SetCurrentlyHitable(true);
+        }
+
+    }
+
+    public BaseHitableObject GetHitable() {
+        return hitable;
+    }
 }

@@ -68,6 +68,7 @@ public class TutorialManager : MonoBehaviour {
 	}
 
     private void OnTutorialCompleted() {
+        tutorialCompleted = true;
         foreach (GameObject hint in hints) {
             hint.SetActive(false);
         }

@@ -72,7 +72,9 @@ public class GameManager : MonoBehaviour {
             nextSolvableModuleIntruction();
             if (amountSucceededModules == modules.Length) {
                 gameWon = true;
+                EventManager.TriggerEvent("TutorialCompleted");
                 if (winSound != null) {
+                    PrintText(gameWonScreen);
                     winSound.Play();
                     StartCoroutine(ShowScreenAfterSeconds(winSound.clip.length, gameWonScreen));
                 }
@@ -88,8 +90,10 @@ public class GameManager : MonoBehaviour {
     }
 
     void OnModuleFailed() {
+        EventManager.TriggerEvent("TutorialCompleted");
         if (!gameLost && !gameWon) {
             gameLost = true;
+            PrintText(gameOverScreen);
             if (timer != null) {
                 timer.FastCountdown();
             }
@@ -134,7 +138,7 @@ public class GameManager : MonoBehaviour {
     private void nextSolvableModuleIntruction() {
         string instruction = "No Modules left!";
         foreach (Module module in modules) {
-            if (!module.GetPassed()) {
+            if (!module.GetPlayed()) {
                 instruction = module.instruction;
                 break;
             }
@@ -164,6 +168,14 @@ public class GameManager : MonoBehaviour {
                 backgroundMusic.playOnAwake = false;
             }
         }
+    }
+
+    private void PrintText(GameObject screen) {
+        Text remainingTime = screen.transform.Find("RemainingTime").GetComponent<Text>();
+        Text defusedModules = screen.transform.Find("DefusedModules").GetComponent<Text>();
+
+        remainingTime.text = "remaining time: " + timer.GetFormattedTime() + " / " + timer.GetFormattedInitialTime();
+        defusedModules.text = "number of defused modules: " + amountSucceededModules + " / " + modules.Length;
     }
 
 }

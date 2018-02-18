@@ -13,11 +13,11 @@ public class PlierGraspController : BaseGraspController {
     private float maxTargetPosition;
 
     public override void DoGraspAction() {
-        spring.targetPosition = maxTargetPosition - (maxTargetPosition * hand.GrabStrength);
+        spring.targetPosition = maxTargetPosition - (maxTargetPosition * leapHand.GrabStrength);
         handleRightHj.spring = spring;
         
         if (!rotated) {
-            Vector3 palmDirection = hand.PalmNormal.ToUnityScaled(true);
+            Vector3 palmDirection = leapHand.PalmNormal.ToUnityScaled(true);
             //transform.rotation = Quaternion.LookRotation(palmDirection);
             rotated = true;
         }

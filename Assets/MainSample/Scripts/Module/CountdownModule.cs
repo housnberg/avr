@@ -19,12 +19,20 @@ public class CountdownModule : MonoBehaviour {
     public float seconds = 0;
     public float miliseconds = 0;
 
+    private float initialMinutes;
+    private float initialSeconds;
+    private float initialMiliseconds;
+
     void Awake() {
         EventManager.StartListening("StartTimer", OnStartTimer);
 
         if (playOnAwake) {
             started = true;
         }
+
+        initialMinutes = minutes;
+        initialSeconds = seconds;
+        initialMiliseconds = miliseconds;
     }
 
     void Start() {
@@ -62,7 +70,7 @@ public class CountdownModule : MonoBehaviour {
                     EventManager.TriggerEvent("ModuleFailed");
                 }
 
-                counter.text = string.Format("{0:00}-{1:00}-{2:00}", minutes, seconds, (int) miliseconds < 0 ? 0 : (int) miliseconds);
+                counter.text = Format(minutes, seconds, miliseconds);
             }
         }
     }
@@ -78,4 +86,16 @@ public class CountdownModule : MonoBehaviour {
     public void Stop() {
         stop = true;
     }
+
+    public string GetFormattedTime() {
+        return counter.text;
+    }
+
+    public string GetFormattedInitialTime() {
+        return Format(initialMinutes, initialSeconds, initialMiliseconds);
+    }
+
+    private string Format(float minutes, float seconds, float miliseconds) {
+        return string.Format("{0:00}-{1:00}-{2:00}", minutes, seconds, (int) miliseconds < 0 ? 0 : (int) miliseconds); 
+    } 
 }

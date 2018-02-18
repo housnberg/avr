@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Leap;
 
 [RequireComponent(typeof(Animator))]
 public class MenuButton : MonoBehaviour {
@@ -20,26 +21,32 @@ public class MenuButton : MonoBehaviour {
 
     void OnTriggerEnter(Collider other) {
         if (other.tag == TagConstants.FINGER_TIP && !isClicked) {
-            animator.SetTrigger(STATE_CLICKED);
-            animator.ResetTrigger(STATE_IDLE);
+            HandModel hand = other.transform.GetComponentInParent<HandModel>();
+            Hand leapHand = hand.GetLeapHand();
 
-            isClicked = true;
+            if (leapHand.IsRight) {
+                animator.SetTrigger(STATE_CLICKED);
+                animator.ResetTrigger(STATE_IDLE);
 
-			if (transform.name == "ButtonRestart" && TutorialManager.instance.tutorialCompleted) {
-                EventManager.TriggerEvent("ReloadGame");
-            } else if (transform.name == "ButtonReset") {
-                EventManager.TriggerEvent("ResetTools");
-				EventManager.TriggerEvent ("TutorialReset");
-            }
-            
-            if (clickSound != null) {
-				clickSound.Play();
+                isClicked = true;
+
+                if (transform.name == "ButtonRestart" && TutorialManager.instance.tutorialCompleted) {
+                    EventManager.TriggerEvent("ReloadGame");
+                }
+                else if (transform.name == "ButtonReset") {
+                    EventManager.TriggerEvent("ResetTools");
+                    EventManager.TriggerEvent("TutorialReset");
+                }
+
+                if (clickSound != null) {
+                    clickSound.Play();
+                }
             }
         }
     }
 
-    void OnTriggerExit(Collider colider) {
-        if (colider.tag == TagConstants.FINGER_TIP) {
+    void OnTriggerExit(Collider collider) {
+        if (collider.tag == TagConstants.FINGER_TIP) {
             animator.SetTrigger(STATE_IDLE);
             animator.ResetTrigger(STATE_CLICKED);
 

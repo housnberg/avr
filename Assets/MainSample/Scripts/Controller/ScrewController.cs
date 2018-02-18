@@ -19,6 +19,11 @@ public class ScrewController : MonoBehaviour {
 		if (other.tag == "ScrewdriverTip") {
 			ScrewdriverGraspController screwdriverController = other.transform.parent.parent.GetComponent<ScrewdriverGraspController> ();
 			screwdriverController.connectScrew (transform.parent.gameObject, recess.bounds.center);
+
+            BaseHitableObject hitable = screwdriverController.GetHitable();
+            if (hitable != null) {
+                hitable.SetCurrentlyHitable(false);
+            }
 		}
 	}
 

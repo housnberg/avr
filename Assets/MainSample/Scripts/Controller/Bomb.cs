@@ -9,8 +9,16 @@ public class Bomb : MonoBehaviour {
     public GameObject explosionEffect;
     public bool affectNearbyObjects = false;
 
-	public void Explode() {
-        Instantiate(explosionEffect, transform.position, transform.rotation);
+    private ParticleSystem explosion;
+
+    private void Start() {
+        explosionEffect = Instantiate(explosionEffect, transform.position, transform.rotation);
+        explosion = explosionEffect.GetComponent<ParticleSystem>();
+    }
+
+    public void Explode() {
+        explosion.Play();
+        StartCoroutine(Stop(explosion.main.duration));
 
         if (affectNearbyObjects) {
             Collider[] colliders = Physics.OverlapSphere(transform.position, blastRadius);
@@ -23,7 +31,12 @@ public class Bomb : MonoBehaviour {
                 }
             }
         }
+    }
 
-        explosionEffect.GetComponent<ParticleSystem>().loop = false;
+    //WORKAROUND
+    private IEnumerator Stop(float seconds) {
+        yield return new WaitForSeconds(seconds - 1);
+
+        explosion.Stop();
     }
 }

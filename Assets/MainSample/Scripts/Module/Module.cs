@@ -6,19 +6,21 @@ public class Module : MonoBehaviour {
     public string instruction;
     public int priority;
 
-    private bool isPassed;
+    private bool isPlayed;
 
     public void ModulePassed(bool passed) {
-        isPassed = passed;
-        string moduleEvent = "ModulePassed";
-        if (!passed) {
-            moduleEvent = "ModuleFailed";
+        if (!isPlayed) {
+            isPlayed = true;
+            string moduleEvent = "ModulePassed";
+            if (!passed) {
+                moduleEvent = "ModuleFailed";
+            }
+            EventManager.TriggerEvent(moduleEvent);
         }
-        EventManager.TriggerEvent(moduleEvent);
     }
 
-    public bool GetPassed() {
-        return isPassed;
+    public bool GetPlayed() {
+        return isPlayed;
     }
 
 }

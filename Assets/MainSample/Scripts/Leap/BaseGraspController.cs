@@ -8,8 +8,8 @@ public abstract class BaseGraspController : MonoBehaviour {
 
     private GraspableObject graspableObject;
     private GameObject handWrapper;
-    protected HandModel handModel;
-    protected Hand hand;
+    protected HandModel hand;
+    protected Hand leapHand;
 
     private bool hasBeenAdjusted = false;
     private Transform wrapper;
@@ -27,8 +27,8 @@ public abstract class BaseGraspController : MonoBehaviour {
 	void Update () {
         handWrapper = GameObject.FindWithTag(TagConstants.HAND);
         if (handWrapper != null) {
-            handModel = handWrapper.GetComponent<HandModel>();
-            hand = handModel.GetLeapHand();
+            hand = handWrapper.GetComponent<HandModel>();
+            leapHand = hand.GetLeapHand();
 
             if (graspableObject.IsGrabbed()) {
                 if (baseHitable != null) {
