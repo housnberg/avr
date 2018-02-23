@@ -24,7 +24,7 @@ public class CountdownModule : MonoBehaviour {
     private float initialMiliseconds;
 
     void Awake() {
-        EventManager.StartListening("StartTimer", OnStartTimer);
+        EventManager.StartListening(ComplexBombEvent.START_COUNTDOWN, OnStartTimer);
 
         if (playOnAwake) {
             started = true;
@@ -67,7 +67,7 @@ public class CountdownModule : MonoBehaviour {
                     seconds = 0;
                     miliseconds = 0;
                     beepLong.Play();
-                    EventManager.TriggerEvent("ModuleFailed");
+                    EventManager.TriggerEvent(ComplexBombEvent.MODULE_FAILED);
                 }
 
                 counter.text = Format(minutes, seconds, miliseconds);

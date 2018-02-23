@@ -27,8 +27,8 @@ public class TutorialManager : MonoBehaviour {
 		tutorialScreen = GameObject.Find("TutorialScreen");
 		tutorialScreen.SetActive (true);
 
-		EventManager.StartListening("TutorialTools", OnTutorialTools);
-        EventManager.StartListening("TutorialCompleted", OnTutorialCompleted);
+		EventManager.StartListening(ComplexBombEvent.TUTORIAL_TOOLS, OnTutorialTools);
+        EventManager.StartListening(ComplexBombEvent.TUTORIAL_COMPLETED, OnTutorialCompleted);
     }
 
 	private void OnTutorialTools() {
@@ -36,8 +36,8 @@ public class TutorialManager : MonoBehaviour {
 		hints[0].SetActive(false);
 		hints[1].SetActive (true);
 		
-		EventManager.StopListening ("TutorialTools", OnTutorialTools);
-		EventManager.StartListening ("TutorialMenu", OnTutorialMenu);
+		EventManager.StopListening (ComplexBombEvent.TUTORIAL_TOOLS, OnTutorialTools);
+		EventManager.StartListening (ComplexBombEvent.TUTORIAL_MENU, OnTutorialMenu);
 	}
 	
 	private void OnTutorialMenu() {
@@ -45,8 +45,8 @@ public class TutorialManager : MonoBehaviour {
 		hints[1].SetActive (false);
 		hints[2].SetActive (true);
 		
-		EventManager.StopListening ("TutorialMenu", OnTutorialMenu);
-		EventManager.StartListening ("TutorialReset", OnTutorialReset);
+		EventManager.StopListening (ComplexBombEvent.TUTORIAL_MENU, OnTutorialMenu);
+		EventManager.StartListening (ComplexBombEvent.TUTORIAL_RESET, OnTutorialReset);
 	}
 	
 	private void OnTutorialReset() {
@@ -54,8 +54,8 @@ public class TutorialManager : MonoBehaviour {
 		hints[2].SetActive (false);
 		hints[3].SetActive (true);
 		
-		EventManager.StopListening ("TutorialReset", OnTutorialReset);
-		EventManager.StartListening ("TutorialInstructions", OnTutorialInstructions);
+		EventManager.StopListening (ComplexBombEvent.TUTORIAL_RESET, OnTutorialReset);
+		EventManager.StartListening (ComplexBombEvent.TUTORIAL_INSTRUCTIONS, OnTutorialInstructions);
 	}
 
 	private void OnTutorialInstructions() {
@@ -63,8 +63,8 @@ public class TutorialManager : MonoBehaviour {
 		hints[3].SetActive(false);
 
 		tutorialCompleted = true;
-		EventManager.StopListening ("TutorialInstructions", OnTutorialInstructions);
-        EventManager.TriggerEvent("TutorialCompleted");
+		EventManager.StopListening(ComplexBombEvent.TUTORIAL_INSTRUCTIONS, OnTutorialInstructions);
+        EventManager.TriggerEvent(ComplexBombEvent.TUTORIAL_COMPLETED);
 	}
 
     private void OnTutorialCompleted() {
@@ -72,9 +72,9 @@ public class TutorialManager : MonoBehaviour {
         foreach (GameObject hint in hints) {
             hint.SetActive(false);
         }
-        EventManager.StopListening("TutorialMenu", OnTutorialMenu);
-        EventManager.StopListening("TutorialReset", OnTutorialReset);
-        EventManager.StopListening("TutorialInstructions", OnTutorialInstructions);
-        EventManager.StopListening("TutorialTools", OnTutorialTools);
+        EventManager.StopListening(ComplexBombEvent.TUTORIAL_MENU, OnTutorialMenu);
+        EventManager.StopListening(ComplexBombEvent.TUTORIAL_RESET, OnTutorialReset);
+        EventManager.StopListening(ComplexBombEvent.TUTORIAL_INSTRUCTIONS, OnTutorialInstructions);
+        EventManager.StopListening(ComplexBombEvent.TUTORIAL_TOOLS, OnTutorialTools);
     }
 }

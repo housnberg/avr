@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Module : MonoBehaviour {
+public abstract class Module : MonoBehaviour {
 
     [TextArea]
     public string instruction;
@@ -8,12 +8,12 @@ public class Module : MonoBehaviour {
 
     private bool isPlayed;
 
-    public void ModulePassed(bool passed) {
+    protected void Passed(bool passed) {
         if (!isPlayed) {
             isPlayed = true;
-            string moduleEvent = "ModulePassed";
+            ComplexBombEvent moduleEvent = ComplexBombEvent.MODULE_PASSED;
             if (!passed) {
-                moduleEvent = "ModuleFailed";
+                moduleEvent = ComplexBombEvent.MODULE_FAILED;
             }
             EventManager.TriggerEvent(moduleEvent);
         }

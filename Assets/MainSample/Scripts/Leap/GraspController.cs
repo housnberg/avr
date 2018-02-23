@@ -335,13 +335,14 @@ public class GraspController : MonoBehaviour {
                 Vector3 palmPosition = handModel.GetPalmPosition();
                 Vector3 positionOffset = graspable.positionOffset;
                 Vector3 rotationOffset = graspable.rotatationOffset;
-                
+
                 graspable.transform.rotation = handModel.GetPalmRotation();
                 graspable.transform.rotation *= Quaternion.Euler(rotationOffset.x, rotationOffset.y, rotationOffset.z);
-                
+
                 graspable.transform.position = handModel.GetPalmPosition();
-                graspable.transform.position = graspable.transform.position + (handModel.GetPalmNormal() * positionOffset.z) + (handModel.palm.transform.forward * positionOffset.y) + (handModel.palm.transform.right * positionOffset.x); 
-            } else {
+                graspable.transform.position = graspable.transform.position + (handModel.GetPalmNormal() * positionOffset.z) + (handModel.palm.transform.forward * positionOffset.y) + (handModel.palm.transform.right * positionOffset.x);
+            }
+            else {
                 Vector3 targetPosition = this.SmoothedGraspPosition + targetRotation * this.GraspOffset;
                 targetPosition.x = Mathf.Clamp(targetPosition.x, MinMovement.x, MaxMovement.x);
                 targetPosition.y = Mathf.Clamp(targetPosition.y, MinMovement.y, MaxMovement.y);
@@ -395,7 +396,6 @@ public class GraspController : MonoBehaviour {
                                                                   ForceMode.Acceleration);
         }
         if (graspable != null) {
-            Debug.Log("#################");
             HandModel handModel = this.GetComponent<HandModel>();
             graspable.transform.rotation = handModel.GetPalmRotation();
         }

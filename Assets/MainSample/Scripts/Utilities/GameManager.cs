@@ -51,13 +51,13 @@ public class GameManager : MonoBehaviour {
 
         instructionText = transform.Find("Instruction/Quad/Canvas/InstructionText").GetComponent<Text>();
 
-        EventManager.StartListening("ModulePassed", OnModulePassed);
-        EventManager.StartListening("ModuleFailed", OnModuleFailed);
-        EventManager.StartListening("ReloadGame", OnReloadGame);
+        EventManager.StartListening(ComplexBombEvent.MODULE_PASSED, OnModulePassed);
+        EventManager.StartListening(ComplexBombEvent.MODULE_FAILED, OnModuleFailed);
+        EventManager.StartListening(ComplexBombEvent.RELOAD_GAME, OnReloadGame);
 
-        EventManager.StartListening("TutorialCompleted", OnTutorialCompleted);
-        EventManager.StartListening("CaseOpened", OnCaseOpened);
-        EventManager.StartListening("MetalplateRemoved", OnMetalplateRemoved);
+        EventManager.StartListening(ComplexBombEvent.TUTORIAL_COMPLETED, OnTutorialCompleted);
+        EventManager.StartListening(ComplexBombEvent.CASE_OPENED, OnCaseOpened);
+        EventManager.StartListening(ComplexBombEvent.METALPLATE_REMOVED, OnMetalplateRemoved);
 
         Array.Sort(modules, delegate (Module current, Module other) {
             return current.priority.CompareTo(other.priority);
@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour {
             nextSolvableModuleIntruction();
             if (amountSucceededModules == modules.Length) {
                 gameWon = true;
-                EventManager.TriggerEvent("TutorialCompleted");
+                EventManager.TriggerEvent(ComplexBombEvent.TUTORIAL_COMPLETED);
                 if (winSound != null) {
                     PrintText(gameWonScreen);
                     winSound.Play();
@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour {
     }
 
     void OnModuleFailed() {
-        EventManager.TriggerEvent("TutorialCompleted");
+        EventManager.TriggerEvent(ComplexBombEvent.TUTORIAL_COMPLETED);
         if (!gameLost && !gameWon) {
             gameLost = true;
             PrintText(gameOverScreen);
@@ -160,6 +160,10 @@ public class GameManager : MonoBehaviour {
 
                 if (backgroundMusicSourceAnchor != null) {
                     AudioSource.PlayClipAtPoint(backgroundMusic.clip, backgroundMusicSourceAnchor.position, backgroundMusic.volume);
+                    AudioSource source = GameObject.Find("One shot audio").GetComponent<AudioSource>();
+                    source.loop = true;
+                    Instantiate(source);
+                    Destroy(source);
                 } else {
                     backgroundMusic.Play();
                 }

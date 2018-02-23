@@ -5,9 +5,8 @@ using Leap;
 
 [RequireComponent(typeof(GraspableObject))]
 public abstract class BaseGraspController : MonoBehaviour {
-
+    
     private GraspableObject graspableObject;
-    private GameObject handWrapper;
     protected HandModel hand;
     protected Hand leapHand;
 
@@ -25,11 +24,15 @@ public abstract class BaseGraspController : MonoBehaviour {
     }
 	
 	void Update () {
-        handWrapper = GameObject.FindWithTag(TagConstants.HAND);
-        if (handWrapper != null) {
-            hand = handWrapper.GetComponent<HandModel>();
-            leapHand = hand.GetLeapHand();
-
+        GameObject[] handWrappers = GameObject.FindGameObjectsWithTag(TagConstants.HAND);
+        if (handWrappers.Length != 0) {
+            foreach (GameObject handWrapper in handWrappers) {
+                hand = handWrapper.GetComponent<HandModel>();
+                leapHand = hand.GetLeapHand();
+                if (leapHand.IsRight) {
+                    break;
+                }
+            }
             if (graspableObject.IsGrabbed()) {
                 if (baseHitable != null) {
                     baseHitable.SetCurrentlyHitable(false);

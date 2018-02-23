@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
-
-public class WireModule : Module {
+﻿public class WireModule : Module {
 
     private int amountCutableWires = 0;
     private int amountCuttedWires = 0;
@@ -17,18 +11,18 @@ public class WireModule : Module {
             }
         }
 
-        EventManager.StartListening("Cutted", OnCutted);
-        EventManager.StartListening("CuttedFalse", CuttedFalse);
+        EventManager.StartListening(ComplexBombEvent.RIGHT_CABLE_CUTTED, OnRightCableCutted);
+        EventManager.StartListening(ComplexBombEvent.WRONG_CABLE_CUTTED, OnWrongCableCutted);
     }
 
-    void OnCutted() {
+    private void OnRightCableCutted() {
         amountCuttedWires++;
         if (amountCuttedWires == amountCutableWires) {
-            ModulePassed(true);
+            Passed(true);
         }
     }
 
-    void CuttedFalse() {
-        ModulePassed(false);
+    private void OnWrongCableCutted() {
+        Passed(false);
     }
 }

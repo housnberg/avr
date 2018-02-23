@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Leap;
 
 public class ScrewdriverGraspController : BaseGraspController {
 
     public float looseningThreshold = 0.2f;
+    public AudioSource[] screwSounds;
 
 	GraspController[] hands;
 
@@ -24,6 +23,8 @@ public class ScrewdriverGraspController : BaseGraspController {
 	float screwLength;
 	Vector3 firstContactPosition;
 
+    private bool screwed = true;
+
     public override void DoGraspAction ()
 	{
         if (connectedScrew != null) {
@@ -34,9 +35,14 @@ public class ScrewdriverGraspController : BaseGraspController {
             }
 			if (rotationDelta >= 0) {
 				rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
-			} else if (rotationDelta < 0) {
+                if (screwSounds.Length != 0 && !screwed) {
+                    AudioSource currentSound = screwSounds[(int)Random.Range(0, screwSounds.Length - 1)];
+                    AudioSource.PlayClipAtPoint(currentSound.clip, transform.position, currentSound.volume);
+                }
+                screwed = true;
+            } else if (rotationDelta < 0) {
 				rb.constraints |= RigidbodyConstraints.FreezeRotationY;
-			}
+            }
 
 			if (overallRotationDelta > rotationThreshold) {
 				disconnectScrew ();
@@ -44,23 +50,25 @@ public class ScrewdriverGraspController : BaseGraspController {
 				rotationDelta = (transform.rotation * Quaternion.Inverse (startRotation)).y;
 				print (overallRotationDelta);
 			}
+
 			// move screwdriver upwards while unscrewing
 			newPosition = firstContactPosition + new Vector3(.0f, (1/rotationThreshold*overallRotationDelta)*screwLength, .0f);
 			transform.position = newPosition;
-		}
-
+        }
 	}
 
 	public override void CancelGraspAction ()
 	{
 		if (connectedScrew != null) {
-			if (rb.constraints != RigidbodyConstraints.FreezeAll)
-				rb.constraints |= RigidbodyConstraints.FreezeRotationY;
-
-			overallRotationDelta += Quaternion.Angle (startRotation, transform.rotation);
+			if (rb.constraints != RigidbodyConstraints.FreezeAll) {
+                rb.constraints |= RigidbodyConstraints.FreezeRotationY;
+            }
+            screwed = false;
+            overallRotationDelta += Quaternion.Angle (startRotation, transform.rotation);
 			startRotation = transform.rotation;
 		}
-	}
+        
+    }
 
 	public override void Init ()
 	{

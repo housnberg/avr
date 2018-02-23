@@ -5,32 +5,49 @@ using cakeslice;
 
 public class CaseButtonController : MonoBehaviour {
 
+    public AudioSource clickEnterSound;
+    public AudioSource clickExitSound;
+
 	bool isPressed;
 	Outline outlineScript;
-
-	// Use this for initialization
+    
 	void Start () {
 		isPressed = false;
 		this.outlineScript = GetComponent<Outline> ();
-		this.outlineScript.enabled = false;
-	}
+
+        EnableOutline(false);
+    }
 
 	void OnTriggerEnter (Collider other) {
-		if (other.tag == "FingerTip") {
+		if (other.tag == "FingerTip" && !isPressed) {
 			isPressed = true;
-			this.outlineScript.enabled = true;
+            EnableOutline(true);
+
+            if (clickEnterSound != null) {
+                AudioSource.PlayClipAtPoint(clickEnterSound.clip, transform.position, clickEnterSound.volume);
+            }
 		}
 	}
 
 	void OnTriggerExit (Collider other) {
-		if (other.tag == "FingerTip") {
+		if (other.tag == "FingerTip" && isPressed) {
 			isPressed = false;
-			this.outlineScript.enabled = false;
-		}
+
+            EnableOutline(false);
+
+            if (clickExitSound != null) {
+                AudioSource.PlayClipAtPoint(clickExitSound.clip, transform.position, clickExitSound.volume);
+            }
+        }
 	}
 
 	public bool IsPressed() {
 		return isPressed;
 	}
 
+    private void EnableOutline(bool enabled) {
+        if (outlineScript != null) {
+            this.outlineScript.enabled = enabled;
+        }
+    } 
 }

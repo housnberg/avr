@@ -13,6 +13,8 @@ public class CaseController : MonoBehaviour {
     public float zPosition = 0;
     public float rotationAngle = 25;
 
+    public AudioSource caseOpenSound;
+
     private CaseButtonController leftButton;
 	private CaseButtonController rightButton;
 	
@@ -22,27 +24,29 @@ public class CaseController : MonoBehaviour {
     
     private bool isMoving = false;
     private bool isRotating = false;
-
-	// Use this for initialization
+    
 	void Start () {
 		hinge = GameObject.FindGameObjectWithTag(TagConstants.CASE_LID).GetComponent<HingeJoint>();
 		fingerTips = GameObject.FindGameObjectsWithTag (TagConstants.FINGER_TIP);
 		leftButton = GameObject.FindGameObjectWithTag(TagConstants.LEFT_CASE_BUTTON).GetComponent<CaseButtonController>();
         rightButton = GameObject.FindGameObjectWithTag(TagConstants.RIGHT_CASE_BUTTON).GetComponent<CaseButtonController>();
 
-		EventManager.StartListening ("MetalplateRemoved", RotateCase);
+		EventManager.StartListening (ComplexBombEvent.METALPLATE_REMOVED, RotateCase);
 	}
 	
-	// Update is called once per frame
 	void Update () {
 		if (!isOpen && CheckCollider()) {
             JointSpring spring = hinge.spring;
             spring.targetPosition = openingAngle;
             hinge.spring = spring;
 
-            EventManager.TriggerEvent("StartTimer");
+            EventManager.TriggerEvent(ComplexBombEvent.START_COUNTDOWN);
             isOpen = true;
-            EventManager.TriggerEvent("CaseOpened");
+            EventManager.TriggerEvent(ComplexBombEvent.CASE_OPENED);
+
+            if (caseOpenSound != null) {
+                AudioSource.PlayClipAtPoint(caseOpenSound.clip, transform.position, caseOpenSound.volume);
+            }
 
             StartCoroutine(Move(delay));
 		}

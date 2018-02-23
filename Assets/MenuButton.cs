@@ -31,11 +31,11 @@ public class MenuButton : MonoBehaviour {
                 isClicked = true;
 
                 if (transform.name == "ButtonRestart" && TutorialManager.instance.tutorialCompleted) {
-                    EventManager.TriggerEvent("ReloadGame");
+                    EventManager.TriggerEvent(ComplexBombEvent.RELOAD_GAME);
                 }
                 else if (transform.name == "ButtonReset") {
-                    EventManager.TriggerEvent("ResetTools");
-                    EventManager.TriggerEvent("TutorialReset");
+                    EventManager.TriggerEvent(ComplexBombEvent.RESET_TOOLS);
+                    EventManager.TriggerEvent(ComplexBombEvent.TUTORIAL_RESET);
                 }
 
                 if (clickSound != null) {

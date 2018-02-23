@@ -72,10 +72,6 @@ public class GraspableObject : MonoBehaviour {
     public Vector3 positionOffset;
     public Vector3 rotatationOffset;
 
-    public GameObject HighlightComponent;
-    public Material HighlightMaterial;
-    private Material backupMaterial;
-
     private bool isInitialized = false;
 
     private Renderer[] renderers;
@@ -94,10 +90,6 @@ public class GraspableObject : MonoBehaviour {
         this.InitialRotation = this.transform.rotation;
         this.CollectionContainer = GameObject.FindWithTag("Container");
         this.InitialPositionAnchor = GameObject.FindWithTag("PositionAnchor");
-
-        if (this.HighlightComponent != null) {
-            this.backupMaterial = this.HighlightComponent.GetComponent<Renderer>().material;
-        }
 
         if (visualizeGrasping) {
             renderers = GetComponentsInChildren<Renderer>();
@@ -134,7 +126,6 @@ public class GraspableObject : MonoBehaviour {
     public virtual void OnGrasp(GameObject hand) {
         this.Grasped = true;
         this.Hovered = false;
-        this.WasGrasped = true;
         if (this.BreakableJoint != null) {
             // TODO: disconnect the joint
             Joint breakJoint = this.BreakableJoint.GetComponent<Joint>();
@@ -176,8 +167,6 @@ public class GraspableObject : MonoBehaviour {
             if (cl != null) Physics.IgnoreCollision(this.GetComponent<Collider>(), cl, false);
         }
 
-        if (this.HighlightComponent != null) this.HighlightComponent.GetComponent<Renderer>().material = this.backupMaterial;
-
         EnableOutlines(false);
         return false;
     }
@@ -196,10 +185,14 @@ public class GraspableObject : MonoBehaviour {
         }
     }
 
+    
     void OnCollisionExit(Collision other) {
-        this.GetComponent<Rigidbody>().useGravity = true;
-        this.GetComponent<Rigidbody>().isKinematic = false;
+        if (!Grasped) {
+            this.GetComponent<Rigidbody>().useGravity = true;
+            this.GetComponent<Rigidbody>().isKinematic = false;
+        }
     }
+    
 
     IEnumerator CollisionDispatcher(GameObject hand) {
         if (GraspableObject.Verbose) Debug.Log("try to disable collisions between " + this.gameObject.name + " and " + hand.name);
@@ -266,12 +259,6 @@ public class GraspableObject : MonoBehaviour {
         }
 
         this.transform.position = this.InitialPosition;
-        //this.InitialPositionAnchor.GetComponent<HingeJoint>().connectedAnchor = angleX == 0.0f ? new Vector3(0.0f, -.8f, 0.0f) : new Vector3(0.0f, .8f, 0.0f);
-        //this.InitialPositionAnchor.GetComponent<HingeJoint>().connectedBody = this.gameObject.GetComponent<Rigidbody>();
-
-        //this.BreakableJoint = this.InitialPositionAnchor.GetComponent<Rigidbody>();
-
-        if (this.HighlightComponent != null) this.HighlightComponent.GetComponent<Renderer>().material = this.backupMaterial;
     }
 
     public bool HasBeenTouched() {
@@ -295,8 +282,10 @@ public class GraspableObject : MonoBehaviour {
     }
 
     private void EnableOutlines(bool enabled) {
-        foreach (Outline outline in outlines) {
-            outline.enabled = enabled;
+        if (outlines != null) {
+            foreach (Outline outline in outlines) {
+                outline.enabled = enabled;
+            }
         }
     }
 

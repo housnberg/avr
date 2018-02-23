@@ -52,7 +52,7 @@ public class PlateController : MonoBehaviour
 
 		Rigidbody rig = this.GetComponent<Rigidbody> ();
 		rig.isKinematic = false;
-		EventManager.TriggerEvent ("MetalplateRemoved");
+		EventManager.TriggerEvent (ComplexBombEvent.METALPLATE_REMOVED);
 		rig.AddForce ((transform.up-transform.forward) * 200);
 	}
 

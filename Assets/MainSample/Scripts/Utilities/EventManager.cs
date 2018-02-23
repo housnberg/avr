@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class EventManager : MonoBehaviour {
  
-    private Dictionary<string, UnityEvent> eventDictionary;
+    private Dictionary<ComplexBombEvent, UnityEvent> eventDictionary;
     private static EventManager eventManager;
 
     public static EventManager instance {
@@ -26,11 +26,11 @@ public class EventManager : MonoBehaviour {
 
     void Init() {
         if (eventDictionary == null) {
-            eventDictionary = new Dictionary<string, UnityEvent>();
+            eventDictionary = new Dictionary<ComplexBombEvent, UnityEvent>();
         }
     }
 
-    public static void StartListening(string eventName, UnityAction listener) {
+    public static void StartListening(ComplexBombEvent eventName, UnityAction listener) {
         UnityEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent)) {
             thisEvent.AddListener(listener);
@@ -42,7 +42,7 @@ public class EventManager : MonoBehaviour {
         }
     }
 
-    public static void StopListening(string eventName, UnityAction listener) {
+    public static void StopListening(ComplexBombEvent eventName, UnityAction listener) {
         if (eventManager == null) return;
         UnityEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent)) {
@@ -50,7 +50,7 @@ public class EventManager : MonoBehaviour {
         }
     }
 
-    public static void TriggerEvent(string eventName) {
+    public static void TriggerEvent(ComplexBombEvent eventName) {
         UnityEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent)) {
             thisEvent.Invoke();

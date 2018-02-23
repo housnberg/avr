@@ -23,17 +23,15 @@ public class ToolHitableObject : BaseHitableObject {
         }
     }
 
-    new void Update() {
-        base.Update();
-
-        if (shouldDoHitAction()) {
+    public override void DoHitAction() {
+        if (ShouldDoHitAction()) {
             isMoving = true;
             isCurrentlyHitable = false;
         }
 
         if (isMoving) {
             Move(targetPosition);
-			EventManager.TriggerEvent ("TutorialTools");
+            EventManager.TriggerEvent(ComplexBombEvent.TUTORIAL_TOOLS);
         }
 
         if (targetPosition.Equals(transform.position)) {
@@ -57,6 +55,7 @@ public class ToolHitableObject : BaseHitableObject {
             isMoving = false;
             rb.isKinematic = false;
             isCurrentlyHitable = true;
+            isDoingHitAction = false;
         }
     }
 }

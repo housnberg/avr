@@ -6,6 +6,8 @@ public class Cable : MonoBehaviour {
 
     public float jointBreakForce = 100;
     public GameObject particleSystemPrefab;
+    public AudioSource cutSound;
+
     private GameObject particleSystemInstance;
 
     private bool hasHandleLeftCollided;
@@ -49,9 +51,6 @@ public class Cable : MonoBehaviour {
     }
 
     void Update() {
-        if (particleSystemInstance != null) {
-            Debug.Log(particleSystemInstance.transform.localEulerAngles);
-        }
         if (endPoint == null && startPoint == null) {
             Destroy(gameObject);
         } else if (endPoint == null && !isCutted) {
@@ -69,6 +68,10 @@ public class Cable : MonoBehaviour {
     private void Cut(Transform connector) {
         connector.Rotate(new Vector3(0, 0, 1), Random.Range(25f, 40f));
         isCutted = true;
+
+        if (cutSound != null) {
+            AudioSource.PlayClipAtPoint(cutSound.clip, transform.position, cutSound.volume);
+        }
     }
 
     public bool IsCutted() {

@@ -8,6 +8,7 @@ public class BaseController : MonoBehaviour {
 
     public float moveSpeed = 2f;
     public bool rmvParentOnReset = true;
+    public AudioSource[] tableHitSounds;
 
     private Vector3 initialPosition;
     private Quaternion initialRotation;
@@ -23,7 +24,7 @@ public class BaseController : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         graspController = GetComponent<BaseGraspController>();
 
-        EventManager.StartListening("ResetTools", OnResetTools);
+        EventManager.StartListening(ComplexBombEvent.RESET_TOOLS, OnReset);
     }
 
     protected void Update() {
@@ -36,6 +37,14 @@ public class BaseController : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision) {
         if (collision.transform.tag == "Desk" && !graspController.IsGrabbed()) {
+            if (tableHitSounds.Length != 0 && !isMoving) {
+                AudioSource currentSound = tableHitSounds[(int)Random.Range(0, tableHitSounds.Length - 1)];
+                AudioSource.PlayClipAtPoint(currentSound.clip, transform.position, currentSound.volume);
+            }
+            BaseHitableObject hitable = GetComponent<BaseHitableObject>();
+            if (hitable != null) {
+                hitable.SetCurrentlyHitable(true);
+            }
             isMoving = true;
         }
     }
@@ -58,7 +67,7 @@ public class BaseController : MonoBehaviour {
         }
     }
 
-    protected void OnResetTools() {
+    protected void OnReset() {
         if (rmvParentOnReset) {
             transform.parent = null;
         }

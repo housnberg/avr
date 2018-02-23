@@ -111,12 +111,12 @@ public class WireController : MonoBehaviour {
         if (!isCutted) {
             foreach (Cable cable in cables) {
                 if (cable.IsCutted() && shouldBeCutted) {
-                    EventManager.TriggerEvent("Cutted");
+                    EventManager.TriggerEvent(ComplexBombEvent.RIGHT_CABLE_CUTTED);
                     isCutted = true;
                     break;
                 }
                 if (cable.IsCutted() && !shouldBeCutted) {
-                    EventManager.TriggerEvent("CuttedFalse");
+                    EventManager.TriggerEvent(ComplexBombEvent.WRONG_CABLE_CUTTED);
                     isCutted = true;
                     break;
                 }
