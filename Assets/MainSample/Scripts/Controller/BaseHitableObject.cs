@@ -28,13 +28,13 @@ public abstract class BaseHitableObject : MonoBehaviour {
 
     protected void Update() {
         if ((isHitted && isCurrentlyHitable) || isDoingHitAction) {
+            if (progressBarInstance != null && !progressbarDisabled && !isDoingHitAction) {
+                progressBarInstance.gameObject.SetActive(true);
+                progressBarInstance.UpdateProgressBar(Normalize(hitTime));
+            }
             if (ShouldDoHitAction() || isDoingHitAction) {
                 isDoingHitAction = true;
                 DoHitAction();
-            }
-            if (progressBarInstance != null && !progressbarDisabled) {
-                progressBarInstance.gameObject.SetActive(true);
-                progressBarInstance.UpdateProgressBar(Normalize(hitTime));
             }
         } else {
             if (progressBarInstance != null && !progressbarDisabled) {

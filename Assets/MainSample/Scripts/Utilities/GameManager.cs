@@ -29,8 +29,8 @@ public class GameManager : MonoBehaviour {
     public Transform backgroundMusicSourceAnchor;
     public bool playBackgroundMusic = true;
 
-    private bool gameLost = false;
-    private bool gameWon = false;
+    private bool gameLost;
+    private bool gameWon;
 
     void Awake() {    
         if (instance == null) {
@@ -40,30 +40,19 @@ public class GameManager : MonoBehaviour {
         }
         DontDestroyOnLoad(gameObject);
 
-        gameOverScreen = GameObject.Find("GameOverScreen");
-        gameWonScreen = GameObject.Find("GameWonScreen");
-        gameOverScreen.SetActive (false);
-        gameWonScreen.SetActive (false);
-
-        modules = GameObject.FindObjectsOfType<Module>();
-        timer = GameObject.FindObjectOfType<CountdownModule>();
-        bomb = GameObject.FindObjectOfType<Bomb>();
-
-        instructionText = transform.Find("Instruction/Quad/Canvas/InstructionText").GetComponent<Text>();
-
         EventManager.StartListening(ComplexBombEvent.MODULE_PASSED, OnModulePassed);
         EventManager.StartListening(ComplexBombEvent.MODULE_FAILED, OnModuleFailed);
-        EventManager.StartListening(ComplexBombEvent.RELOAD_GAME, OnReloadGame);
 
         EventManager.StartListening(ComplexBombEvent.TUTORIAL_COMPLETED, OnTutorialCompleted);
         EventManager.StartListening(ComplexBombEvent.CASE_OPENED, OnCaseOpened);
         EventManager.StartListening(ComplexBombEvent.METALPLATE_REMOVED, OnMetalplateRemoved);
 
-        Array.Sort(modules, delegate (Module current, Module other) {
-            return current.priority.CompareTo(other.priority);
-        });
+        instructionText = transform.Find("Instruction/Quad/Canvas/InstructionText").GetComponent<Text>();
 
-        PlayBackgroundMusic();
+        gameOverScreen = GameObject.Find("GameOverScreen");
+        gameWonScreen = GameObject.Find("GameWonScreen");
+
+        Init();
     }
 
     void OnModulePassed() {
@@ -123,11 +112,16 @@ public class GameManager : MonoBehaviour {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    private void OnLevelWasLoaded() {
+        Init();
+    }
+
     private void OnTutorialCompleted() {
         setInstructionText("OPEN THE SUITCASE BY TOUCHING THE FRONT BUTTONS SIMULTANEOUSLY\n\nBEWARE! THE DETONATION COUNTDOWN WILL START AS SOON AS YOU OPEN THE CASE!");
     }
 
     private void OnCaseOpened() {
+        EventManager.StartListening(ComplexBombEvent.RELOAD_GAME, OnReloadGame);
         setInstructionText("TAKE THE SCREWDRIVER AND REMOVE THE METAL PLATE TO GET TO THE CORE MODULE");
     }
 
@@ -180,6 +174,26 @@ public class GameManager : MonoBehaviour {
 
         remainingTime.text = "remaining time: " + timer.GetFormattedTime() + " / " + timer.GetFormattedInitialTime();
         defusedModules.text = "number of defused modules: " + amountSucceededModules + " / " + modules.Length;
+    }
+
+    private void Init() {
+        EventManager.StopListening(ComplexBombEvent.RELOAD_GAME, OnReloadGame);
+        gameOverScreen.SetActive(false);
+        gameWonScreen.SetActive(false);
+
+        modules = GameObject.FindObjectsOfType<Module>();
+        timer = GameObject.FindObjectOfType<CountdownModule>();
+        bomb = GameObject.FindObjectOfType<Bomb>();
+
+        Array.Sort(modules, delegate (Module current, Module other) {
+            return current.priority.CompareTo(other.priority);
+        });
+
+        gameLost = false;
+        gameWon = false;
+        amountSucceededModules = 0;
+
+        PlayBackgroundMusic();
     }
 
 }

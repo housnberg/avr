@@ -3,7 +3,7 @@
     private int amountCutableWires = 0;
     private int amountCuttedWires = 0;
 
-    void Awake() {
+    void Start() {
         WireGenerator[] wires = GetComponentsInChildren<WireGenerator>();
         foreach(WireGenerator wire in wires) {
             if (wire.shouldBeCutted) {

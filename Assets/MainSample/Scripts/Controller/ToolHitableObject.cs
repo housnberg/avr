@@ -32,6 +32,8 @@ public class ToolHitableObject : BaseHitableObject {
         if (isMoving) {
             Move(targetPosition);
             EventManager.TriggerEvent(ComplexBombEvent.TUTORIAL_TOOLS);
+        } else {
+            isDoingHitAction = false;
         }
 
         if (targetPosition.Equals(transform.position)) {
@@ -55,7 +57,6 @@ public class ToolHitableObject : BaseHitableObject {
             isMoving = false;
             rb.isKinematic = false;
             isCurrentlyHitable = true;
-            isDoingHitAction = false;
         }
     }
 }

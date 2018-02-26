@@ -23,7 +23,7 @@ public class CountdownModule : MonoBehaviour {
     private float initialSeconds;
     private float initialMiliseconds;
 
-    void Awake() {
+    void Start() {
         EventManager.StartListening(ComplexBombEvent.START_COUNTDOWN, OnStartTimer);
 
         if (playOnAwake) {
@@ -33,11 +33,10 @@ public class CountdownModule : MonoBehaviour {
         initialMinutes = minutes;
         initialSeconds = seconds;
         initialMiliseconds = miliseconds;
-    }
 
-    void Start() {
         counter = GetComponentInChildren<Text>();
     }
+    
 
     void Update() {
         if (started) {
